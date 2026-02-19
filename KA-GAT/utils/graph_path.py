@@ -233,9 +233,7 @@ def atom_to_graph(smiles,encoder_atom,encoder_bond):
                 num_atoms = mol.GetNumAtoms()
 
                 # Create a graph. undirected_graph
-                g = dgl.DGLGraph()
-                g.add_nodes(num_atoms)
-                g.add_edges(src_list, dst_list)
+                g = dgl.graph((src_list, dst_list), num_nodes=num_atoms)
                 
                 g.ndata['feat'] = node_feats
                 g.ndata['coor'] = coor_tensor  

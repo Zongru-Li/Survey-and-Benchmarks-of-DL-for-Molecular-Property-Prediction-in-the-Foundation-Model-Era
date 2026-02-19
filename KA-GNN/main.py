@@ -57,7 +57,7 @@ class CustomDataset(Dataset):
     def __init__(self, label_list, graph_list):
         self.labels = label_list
         self.graphs = graph_list
-        self.device = torch.device('cpu') 
+        self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
     def __len__(self):
         return len(self.labels)
@@ -208,7 +208,7 @@ def creat_data(datafile, encoder_atom, encoder_bond,batch_size,train_ratio,vali_
                     continue
                 
                 else:
-                    data_list.append([smiles, torch.tensor(labels.iloc[i]),Graph_list])
+                    data_list.append([smiles, torch.tensor(labels.iloc[i].values, dtype=torch.float32), Graph_list])
 
 
 
@@ -496,7 +496,7 @@ if __name__ == '__main__':
     model_select = args.model_select
     loss_sclect = args.loss_sclect
 
-    state = torch.load('data/processed/'+datafile+'.pth')
+    state = torch.load('data/processed/'+datafile+'.pth', weights_only=False)
 
     loaded_train_dataset = CustomDataset(state['train_label'], state['train_graph_list'])
     loaded_valid_dataset = CustomDataset(state['valid_label'], state['valid_graph_list'])
