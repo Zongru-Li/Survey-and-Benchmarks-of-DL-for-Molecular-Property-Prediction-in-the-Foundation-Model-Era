@@ -17,6 +17,7 @@ This is the code of KA-GNN
   - [KA-GNNs(KA-GCN and KA-GAT)](#ka-gnnska-gcn-and-ka-gat)
   - [Experimental Results](#experimental-results)
     - [Comparison with Non-Pretrained Models](#comparison-with-non-pretrained-models)
+  - [Acknowledgment](#acknowledgment)
   - [Citing](#citing)
 ## Environment Requirements
 
@@ -92,6 +93,10 @@ The following table presents the comparison of KA-GNN with various GNN architect
 | SMPT          | 0.873_(0.015)     | 0.734_(0.003)     | 0.927_(0.002)     | 0.676_(0.050)     | 0.797_(0.001)     | 0.812_(0.001)     | 0.822_(0.008)     |
 | **KA-GCN**    | **0.890_(0.014)** | **0.787_(0.014)** | **0.989_(0.003)** | **0.842_(0.001)** | **0.799_(0.005)** | **0.821_(0.005)** | **0.834_(0.009)** |
 | **KA-GAT**    | **0.884_(0.004)** | **0.785_(0.021)** | **0.991_(0.005)** | **0.847_(0.002)** | **0.800_(0.006)** | **0.823_(0.002)** | **0.834_(0.010)** |
+
+## Acknowledgment
+
+This project is developed on top of [KA-GNN](https://github.com/LonglongLi/KA-GNN), developed by Longlong Li and distributed under MIT License.
 
 ## Citing
 
