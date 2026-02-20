@@ -79,7 +79,9 @@ def encode_bond_26(bond, mol):
     bond_dir[bond.GetBondDir()] = 1
     bond_type = [0] * 4
     bond_type[bond_type_map(str(bond.GetBondType()))] = 1
-    bond_lg = AllChem.GetBondLength(mol.GetConformer(), bond.GetBeginAtomIdx(), bond.GetEndAtomIdx())
+    bond_lg = AllChem.GetBondLength(
+        mol.GetConformer(), bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()
+    )
     bond_length = bond_length_onehot(bond_lg)
     in_ring = [0] * 2
     in_ring[int(bond.IsInRing())] = 1
@@ -96,7 +98,13 @@ def encode_bond_14(bond):
     in_ring = [0, 0]
     in_ring[int(bond.IsInRing())] = 1
     non_bond_feature = [0] * 6
-    edge_encode = bond_dir + bond_type + [bond_length, bond_length**2] + in_ring + non_bond_feature
+    edge_encode = (
+        bond_dir
+        + bond_type
+        + [bond_length, bond_length**2]
+        + in_ring
+        + non_bond_feature
+    )
     return edge_encode
 
 
@@ -146,12 +154,23 @@ def check_common_elements(list1, list2, element1, element2):
 
 
 def tensor_nan_inf(per_bond_feat):
-    nan_exists = any(math.isnan(x) if isinstance(x, float) else False for x in per_bond_feat)
-    inf_exists = any(x == float('inf') if isinstance(x, float) else False for x in per_bond_feat)
-    ninf_exists = any(x == float('-inf') if isinstance(x, float) else False for x in per_bond_feat)
+    nan_exists = any(
+        math.isnan(x) if isinstance(x, float) else False for x in per_bond_feat
+    )
+    inf_exists = any(
+        x == float("inf") if isinstance(x, float) else False for x in per_bond_feat
+    )
+    ninf_exists = any(
+        x == float("-inf") if isinstance(x, float) else False for x in per_bond_feat
+    )
     if nan_exists or inf_exists or ninf_exists:
-        clean_list = [0 if isinstance(x, float) and math.isnan(x) else x for x in per_bond_feat]
-        per_bond_feat = [1 if x == float('inf') else -1 if x == float('-inf') else x for x in clean_list]
+        clean_list = [
+            0 if isinstance(x, float) and math.isnan(x) else x for x in per_bond_feat
+        ]
+        per_bond_feat = [
+            1 if x == float("inf") else -1 if x == float("-inf") else x
+            for x in clean_list
+        ]
         return per_bond_feat
     else:
         return per_bond_feat
@@ -163,41 +182,43 @@ def atom_to_graph(smiles, encoder_atom, encoder_bond):
         return False
     else:
         mol = Chem.AddHs(mol)
-    
+
     sps_features = []
     coor = []
     edge_id = []
     atom_charges = []
-    
+
     smiles_with_hydrogens = Chem.MolToSmiles(mol)
     tmp = []
     for num in smiles_with_hydrogens:
-        if num not in ['[', ']', '(', ')']:
+        if num not in ["[", "]", "(", ")"]:
             tmp.append(num)
-    
+
     sm = {}
     for atom in mol.GetAtoms():
         atom_index = atom.GetIdx()
         sm[atom_index] = atom.GetSymbol()
-    
+
     Num_toms = len(tmp)
     if Num_toms > 700:
         return False
-    
+
     if mmff_force_field(mol) == True:
         num_conformers = mol.GetNumConformers()
         if num_conformers > 0:
             AllChem.ComputeGasteigerCharges(mol)
             for ii, s in enumerate(mol.GetAtoms()):
                 per_atom_feat = []
-                feat = list(get_node_attributes(s.GetSymbol(), atom_features=encoder_atom))
+                feat = list(
+                    get_node_attributes(s.GetSymbol(), atom_features=encoder_atom)
+                )
                 per_atom_feat.extend(feat)
                 sps_features.append(per_atom_feat)
                 pos = mol.GetConformer().GetAtomPosition(ii)
                 coor.append([pos.x, pos.y, pos.z])
                 charge = s.GetProp("_GasteigerCharge")
                 atom_charges.append(charge)
-            
+
             edge_features = []
             src_list, dst_list = [], []
             for bond in mol.GetBonds():
@@ -217,34 +238,35 @@ def atom_to_graph(smiles, encoder_atom, encoder_bond):
                 edge_features.append(per_bond_feat)
                 edge_id.append([1])
                 edge_id.append([1])
-            
+
             for i in range(len(coor)):
                 coor_i = np.array(coor[i])
                 for j in range(i + 1, len(coor)):
                     coor_j = np.array(coor[j])
                     s_d_dis = calculate_dis(coor_i, coor_j)
-                    if 0 < s_d_dis <= 5:
+                    if s_d_dis <= 5:
                         if check_common_elements(src_list, dst_list, i, j):
                             src_list.extend([i, j])
                             dst_list.extend([j, i])
                             per_bond_feat = [0] * 15
-                            per_bond_feat.extend(non_bonded(atom_charges, i, j, s_d_dis))
-                            clean_list = tensor_nan_inf(per_bond_feat)
-                            edge_features.append(clean_list)
-                            edge_features.append(clean_list)
+                            per_bond_feat.extend(
+                                non_bonded(atom_charges, i, j, s_d_dis)
+                            )
+                            edge_features.append(per_bond_feat)
+                            edge_features.append(per_bond_feat)
                             edge_id.append([0])
                             edge_id.append([0])
-            
+
             coor_tensor = torch.tensor(coor, dtype=torch.float32)
             edge_feats = torch.tensor(edge_features, dtype=torch.float32)
             edge_id_feats = torch.tensor(edge_id, dtype=torch.float32)
             node_feats = torch.tensor(sps_features, dtype=torch.float32)
             num_atoms = mol.GetNumAtoms()
             g = dgl.graph((src_list, dst_list), num_nodes=num_atoms)
-            g.ndata['feat'] = node_feats
-            g.ndata['coor'] = coor_tensor
-            g.edata['feat'] = edge_feats
-            g.edata['id'] = edge_id_feats
+            g.ndata["feat"] = node_feats
+            g.ndata["coor"] = coor_tensor
+            g.edata["feat"] = edge_feats
+            g.edata["id"] = edge_id_feats
             return g
         else:
             return False

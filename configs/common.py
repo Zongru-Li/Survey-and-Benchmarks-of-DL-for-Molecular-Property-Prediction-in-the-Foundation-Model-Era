@@ -1,4 +1,5 @@
 device = "cuda"
+# device = "cpu"
 
 cuda = {
     "use_cuda": True,
