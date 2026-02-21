@@ -1,27 +1,27 @@
 #!/bin/bash
-# Run all model experiments
-
 set -e
 
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$PROJECT_ROOT"
+cd "$(dirname "$0")/.."
 
-SCRIPTS=(
-    "scripts/run_ka_gat.sh"
-    # "scripts/run_kan_gat.sh"
-    # "scripts/run_mlp_gat.sh"
-    # "scripts/run_po_gat.sh"
-    "scripts/run_ka_gnn.sh"
-    # "scripts/run_ka_gnn_two.sh"
-    # "scripts/run_mlp_sage.sh"
-    # "scripts/run_kan_sage.sh"
-)
+echo "Running all experiments..."
 
-for script in "${SCRIPTS[@]}"; do
-    echo "=========================================="
-    echo "Running $script..."
-    echo "=========================================="
-    bash "$script"
-done
+# MoleculeNet datasets
+bash scripts/run_bace.sh &
+bash scripts/run_bbbp.sh &
+bash scripts/run_clintox.sh &
+bash scripts/run_sider.sh &
+bash scripts/run_tox21.sh &
+bash scripts/run_hiv.sh &
+bash scripts/run_muv.sh &
+wait
 
-echo "All experiments completed!"
+# ADME datasets
+bash scripts/run_adme_hlm.sh &
+bash scripts/run_adme_rlm.sh &
+bash scripts/run_adme_mdr1.sh &
+bash scripts/run_adme_sol.sh &
+bash scripts/run_adme_hppb.sh &
+bash scripts/run_adme_rppb.sh &
+wait
+
+echo "All experiments completed."
