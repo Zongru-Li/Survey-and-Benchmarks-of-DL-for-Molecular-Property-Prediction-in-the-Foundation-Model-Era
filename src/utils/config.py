@@ -34,8 +34,6 @@ def load_model_config(config_path: str) -> Dict[str, Any]:
     
     if 'model_select' in model_config:
         merged['model']['name'] = model_config['model_select']
-    if 'select_dataset' in model_config:
-        merged['data']['dataset'] = model_config['select_dataset']
     if 'encoder_atom' in model_config:
         merged['data']['encoder_atom'] = model_config['encoder_atom']
     if 'encoder_bond' in model_config:

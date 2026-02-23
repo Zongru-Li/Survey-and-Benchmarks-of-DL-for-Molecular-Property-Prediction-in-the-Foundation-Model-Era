@@ -7,7 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.utils.config import load_model_config, setup_device, setup_seed
-from src.utils.data import create_dataloader, get_target_dim
+from src.utils.data import create_dataloader, get_target_dim, is_regression_dataset
 from src.utils.training import train_model
 from src.utils.checkpoint import get_checkpoint_path, save_checkpoint
 from src.utils.output import write_results
@@ -25,7 +25,7 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--dataset", type=str, default=None, help="Override dataset from config"
+        "--dataset", type=str, required=True, help="Dataset name (required)"
     )
     parser.add_argument(
         "--epochs", type=int, default=None, help="Override epochs from config"
@@ -43,6 +43,13 @@ def parse_args():
         "--seed", type=int, default=None, help="Override seed from common.py"
     )
     parser.add_argument(
+        "--split",
+        type=str,
+        default=None,
+        choices=["random", "scaffold", "umap"],
+        help="Dataset split type (random, scaffold, umap)",
+    )
+    parser.add_argument(
         "--checkpoint", type=str, default=None, help="Resume training from checkpoint"
     )
 
@@ -50,10 +57,9 @@ def parse_args():
 
 
 def override_config(config, args):
-    if args.dataset:
-        if "data" not in config:
-            config["data"] = {}
-        config["data"]["dataset"] = args.dataset
+    if "data" not in config:
+        config["data"] = {}
+    config["data"]["dataset"] = args.dataset
     if args.epochs:
         if "training" not in config:
             config["training"] = {}
@@ -70,6 +76,10 @@ def override_config(config, args):
         config["device"] = args.device
     if args.seed:
         config["seed"] = args.seed
+    if args.split:
+        if "training" not in config:
+            config["training"] = {}
+        config["training"]["split_type"] = args.split
     return config
 
 
@@ -111,9 +121,11 @@ def main():
 
     model_name = config["model"]["name"]
     dataset = config["data"]["dataset"]
+    task_type = 'regression' if is_regression_dataset(dataset) else 'classification'
 
     print(f"[INFO] Model: {model_name}", flush=True)
     print(f"[INFO] Dataset: {dataset}", flush=True)
+    print(f"[INFO] Task type: {task_type}", flush=True)
     print(f"[INFO] Device: {device}", flush=True)
 
     config = setup_model_config(config)
@@ -144,7 +156,7 @@ def main():
     print(f"[INFO] Total parameters: {total_params}", flush=True)
     sys.stdout.flush()
 
-    best_model_state, roc_auc, std_dev = train_model(
+    best_model_state, metric_value, std_dev = train_model(
         model_factory=model_factory,
         train_loader=train_loader,
         val_loader=val_loader,
@@ -152,17 +164,23 @@ def main():
         config=config,
         device=device,
         model_type=model_type,
+        task_type=task_type,
         checkpoint_path=args.checkpoint,
     )
+
+    metric_name = 'PearsonR' if task_type == 'regression' else 'ROC-AUC'
 
     if best_model_state is not None:
         checkpoint_path = get_checkpoint_path(
             model_name=model_name,
             params={
                 "dataset": dataset,
+                "split": config["training"].get("split_type", "scaffold"),
                 "learning_rate": config["training"]["learning_rate"],
                 "num_layers": config["model"].get("num_layers", 2),
                 "batch_size": config["training"]["batch_size"],
+                "epochs": config["training"]["epochs"],
+                "iterations": config["training"].get("iterations", 1),
             },
         )
         model_for_save = model_factory()
@@ -171,7 +189,7 @@ def main():
             model=model_for_save,
             optimizer=None,
             epoch=config["training"]["epochs"],
-            metrics={"roc_auc": roc_auc, "std_dev": std_dev},
+            metrics={f"{metric_name.lower()}": metric_value, "std_dev": std_dev},
             config=config,
             path=checkpoint_path,
         )
@@ -181,16 +199,21 @@ def main():
         model_name=model_name,
         params={
             "dataset": dataset,
+            "split": config["training"].get("split_type", "scaffold"),
             "num_layers": config["model"].get("num_layers", 2),
             "learning_rate": config["training"]["learning_rate"],
+            "batch_size": config["training"]["batch_size"],
+            "epochs": config["training"]["epochs"],
+            "iterations": config["training"].get("iterations", 1),
         },
-        roc_auc=roc_auc,
+        metric_value=metric_value,
         std_dev=std_dev,
+        metric_name=metric_name,
         output_dir=Path("outputs"),
     )
 
-    print(f"[INFO] ROC-AUC: {roc_auc:.4f}, STD_DEV: {std_dev:.4f}", flush=True)
-    print(f"mean: {roc_auc:.4f}", flush=True)
+    print(f"[INFO] {metric_name}: {metric_value:.4f}, STD_DEV: {std_dev:.4f}", flush=True)
+    print(f"mean: {metric_value:.4f}", flush=True)
     print(f"std: {std_dev:.4f}", flush=True)
     return 0
 

@@ -8,8 +8,32 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import roc_auc_score
 
 from src.utils.graph import path_complex_mol
-from src.utils.splitters import ScaffoldSplitter
+from src.utils.splitters import RandomSplitter, ScaffoldSplitter, UMAPSplitter
 
+
+SPLITTER_MAP = {
+    'random': RandomSplitter,
+    'scaffold': ScaffoldSplitter,
+    'umap': UMAPSplitter,
+}
+
+ADME_TARGETS = {
+    'adme_hlm': 1,
+    'adme_rlm': 1,
+    'adme_mdr1': 1,
+    'adme_sol': 1,
+    'adme_hppb': 1,
+    'adme_rppb': 1,
+}
+
+REGRESSION_DATASETS = {
+    'adme_hlm',
+    'adme_rlm',
+    'adme_mdr1',
+    'adme_sol',
+    'adme_hppb',
+    'adme_rppb',
+}
 
 TARGET_MAP = {
     'tox21': 12,
@@ -18,8 +42,29 @@ TARGET_MAP = {
     'clintox': 2,
     'bace': 1,
     'bbbp': 1,
-    'hiv': 1
+    'hiv': 1,
+    **ADME_TARGETS,
 }
+
+
+def is_adme_dataset(dataset_name: str) -> bool:
+    return dataset_name in ADME_TARGETS
+
+
+def is_regression_dataset(dataset_name: str) -> bool:
+    return dataset_name in REGRESSION_DATASETS
+
+
+def get_splitter(split_type: str = 'scaffold'):
+    if split_type not in SPLITTER_MAP:
+        raise ValueError(f"Unknown split type: {split_type}. Available: {list(SPLITTER_MAP.keys())}")
+    return SPLITTER_MAP[split_type]()
+
+
+def get_data_path(dataset_name: str, data_dir: str = 'data') -> str:
+    if is_adme_dataset(dataset_name):
+        return os.path.join(data_dir, 'ADME', dataset_name + '.csv')
+    return os.path.join(data_dir, dataset_name + '.csv')
 
 
 def get_label():
@@ -63,6 +108,8 @@ def get_muv():
 
 
 def get_dataset_labels(dataset_name: str) -> List[str]:
+    if is_adme_dataset(dataset_name):
+        return ['value']
     if dataset_name == 'tox21':
         return get_tox()
     elif dataset_name == 'muv':
@@ -142,15 +189,18 @@ def create_dataset(
     train_ratio: float,
     val_ratio: float,
     test_ratio: float,
-    data_dir: str = 'data'
+    data_dir: str = 'data',
+    split_type: str = 'scaffold',
+    seed: int = 42
 ) -> bool:
     directory_path = os.path.join(data_dir, 'processed')
-    target_file_name = datafile + '.pth'
+    target_file_name = f'{datafile}_{split_type}.pth'
     
     if is_file_in_directory(directory_path, target_file_name):
         return True
     
-    df = pd.read_csv(os.path.join(data_dir, datafile + '.csv'))
+    data_path = get_data_path(datafile, data_dir)
+    df = pd.read_csv(data_path)
     label_cols = get_dataset_labels(datafile)
     smiles_list = df['smiles']
     labels = df[label_cols]
@@ -176,17 +226,18 @@ def create_dataset(
     
     print('[INFO] Graph list was done!', flush=True)
     
-    splitter = ScaffoldSplitter().split(data_list, frac_train=train_ratio, frac_valid=val_ratio, frac_test=test_ratio)
-    print('[INFO] Splitter was done!', flush=True)
+    splitter = get_splitter(split_type)
+    splits = splitter.split(data_list, frac_train=train_ratio, frac_valid=val_ratio, frac_test=test_ratio, seed=seed)
+    print(f'[INFO] Splitter ({split_type}) was done!', flush=True)
     
-    train_label = [item[1] for item in splitter[0]]
-    train_graph_list = [item[2] for item in splitter[0]]
+    train_label = [item[1] for item in splits[0]]
+    train_graph_list = [item[2] for item in splits[0]]
     
-    valid_label = [item[1] for item in splitter[1]]
-    valid_graph_list = [item[2] for item in splitter[1]]
+    valid_label = [item[1] for item in splits[1]]
+    valid_graph_list = [item[2] for item in splits[1]]
     
-    test_label = [item[1] for item in splitter[2]]
-    test_graph_list = [item[2] for item in splitter[2]]
+    test_label = [item[1] for item in splits[2]]
+    test_graph_list = [item[2] for item in splits[2]]
     
     os.makedirs(directory_path, exist_ok=True)
     torch.save({
@@ -198,7 +249,8 @@ def create_dataset(
         'test_graph_list': test_graph_list,
         'batch_size': batch_size,
         'shuffle': True,
-    }, os.path.join(directory_path, datafile + '.pth'))
+        'split_type': split_type,
+    }, os.path.join(directory_path, target_file_name))
     
     return True
 
@@ -215,10 +267,13 @@ def create_dataloader(
     val_ratio = config['training'].get('val_ratio', config['training'].get('vali_ratio', 0.1))
     test_ratio = config['training']['test_ratio']
     data_dir = config.get('data_dir', 'data')
+    split_type = config['training'].get('split_type', 'scaffold')
+    seed = config.get('seed', 42)
     
-    create_dataset(datafile, encoder_atom, encoder_bond, batch_size, train_ratio, val_ratio, test_ratio, data_dir)
+    create_dataset(datafile, encoder_atom, encoder_bond, batch_size, 
+                   train_ratio, val_ratio, test_ratio, data_dir, split_type, seed)
     
-    state = torch.load(os.path.join(data_dir, 'processed', datafile + '.pth'), weights_only=False)
+    state = torch.load(os.path.join(data_dir, 'processed', f'{datafile}_{split_type}.pth'), weights_only=False)
     
     collate = collate_fn if model_type == 'gnn' else collate_fn_gat
     
@@ -238,7 +293,7 @@ def create_dataloader(
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=state['shuffle'],
                             num_workers=0, pin_memory=False, drop_last=True, collate_fn=collate)
     
-    print('[INFO] Dataset was loaded!', flush=True)
+    print(f'[INFO] Dataset was loaded (split={split_type})!', flush=True)
     print(f"[INFO] Training set size: {len(train_dataset)}", flush=True)
     print(f"[INFO] Validation set size: {len(valid_dataset)}", flush=True)
     print(f"[INFO] Test set size: {len(test_dataset)}", flush=True)

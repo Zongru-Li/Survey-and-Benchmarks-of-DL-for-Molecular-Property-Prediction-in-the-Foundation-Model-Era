@@ -1,3 +1,41 @@
 ka_gnn_bace_4_0.0001
 ROC-AUC:0.6281, STD_DEV:0.0000
 
+ka_gnn_bace_4_0.0001
+ROC-AUC:0.8760, STD_DEV:0.0000
+
+ka_gnn_bbbp_4_0.0001
+ROC-AUC:0.7248, STD_DEV:0.0000
+
+ka_gnn_bace_scaffold_4_0.0001
+ROC-AUC:0.8774, STD_DEV:0.0000
+
+ka_gnn_adme_sol_scaffold_4_0.0001
+ROC-AUC:0.6212, STD_DEV:0.0000
+
+ka_gnn_adme_sol_scaffold_4_0.0001
+ROC-AUC:0.7793, STD_DEV:0.0000
+
+ka_gnn_adme_sol_umap_4_0.0001
+ROC-AUC:0.6998, STD_DEV:0.0000
+ka_gnn_bace_umap_4_0.0001
+ROC-AUC:0.6156, STD_DEV:0.0000
+
+ka_gnn_sider_umap_4_0.0001
+ROC-AUC:0.8081, STD_DEV:0.0000
+
+ka_gnn_bace_umap_4_0.0001
+ROC-AUC:0.6092, STD_DEV:0.0000
+
+ka_gnn_clintox_umap_4_0.0001
+ROC-AUC:0.9586, STD_DEV:0.0000
+
+ka_gnn_bbbp_umap_4_0.0001
+ROC-AUC:0.5617, STD_DEV:0.0000
+
+ka_gnn_data:bace_split:scaffold_nl:4_lr:0.0001_bs:128_ep:2_iter:1
+ROC-AUC:0.6472, STD_DEV:0.0000
+
+ka_gnn_data:adme_sol_split:scaffold_nl:4_lr:0.0001_bs:128_ep:2_iter:1
+PearsonR:-0.0495, STD_DEV:0.0000
+

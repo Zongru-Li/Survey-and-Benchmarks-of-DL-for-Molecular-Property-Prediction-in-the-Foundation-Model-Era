@@ -4,17 +4,32 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 
+def format_param_value(value: Any) -> str:
+    if isinstance(value, float):
+        formatted = f"{value:.6f}".rstrip('0').rstrip('.')
+        return formatted if formatted else '0'
+    return str(value)
+
+
 def get_checkpoint_path(model_name: str, params: Dict[str, Any]) -> Path:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     
+    key_mapping = {
+        'dataset': 'data',
+        'split': 'split',
+        'num_layers': 'nl',
+        'learning_rate': 'lr',
+        'batch_size': 'bs',
+        'epochs': 'ep',
+        'iterations': 'iter',
+    }
+    
     param_parts = []
-    for key in ['dataset', 'learning_rate', 'num_layers', 'batch_size']:
+    for key in ['dataset', 'split', 'num_layers', 'learning_rate', 'batch_size', 'epochs', 'iterations']:
         if key in params:
-            value = params[key]
-            if isinstance(value, float):
-                param_parts.append(f"{value:.6f}".rstrip('0').rstrip('.'))
-            else:
-                param_parts.append(str(value))
+            short_key = key_mapping.get(key, key)
+            value = format_param_value(params[key])
+            param_parts.append(f"{short_key}:{value}")
     
     param_suffix = "_".join(param_parts)
     filename = f"{model_name}_{timestamp}_{param_suffix}.pth"

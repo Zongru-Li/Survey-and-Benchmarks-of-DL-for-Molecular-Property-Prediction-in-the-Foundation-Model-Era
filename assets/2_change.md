@@ -2,7 +2,7 @@
 
 本文档对比分析当前重构后的 KA-GNN/KA-GAT 实验代码与 `7a84daede621b99bc9affc6fac5a2f9e0aca6194` 提交中的原始代码差异，以及这些差异可能导致实验结果偏差的原因。
 
-**最后更新：** 2026-02-19
+**最后更新：** 2026-02-20
 
 ---
 
@@ -221,19 +221,70 @@ print(f"Epoch {epoch+1} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f
 
 ---
 
-## 7. 总结：当前可能导致实验结果差异的因素
+## 7. 代码风格差异（不影响实验结果）
+
+### 7.1 非键边列表添加方式
+
+**重构前代码 (`KA-GNN/utils/graph_path.py`)：**
+```python
+src_list.append(i)
+src_list.append(j)
+dst_list.append(j)
+dst_list.append(i)
+```
+
+**重构后代码 (`src/utils/graph.py:249-250`)：**
+```python
+src_list.extend([i, j])
+dst_list.extend([j, i])
+```
+
+**影响分析：**
+- 两种方式最终生成的列表内容完全相同
+- **不影响实验结果**
+
+---
+
+### 7.2 预测函数中的设备处理
+
+**重构前代码 (`KA-GNN/main.py`)：**
+```python
+def predicting(model, device, data_loader):
+    ...
+    y = data[0]  # 数据在 CPU（因为 CustomDataset.device = 'cpu'）
+    output = model(graph_list, node_features).cpu()
+```
+
+**重构后代码 (`src/utils/training.py:123-149`)：**
+```python
+def predict_gnn(model, device, data_loader):
+    ...
+    y = data[0].cpu()  # 显式移到 CPU
+    output = model(graph_list, node_features).cpu()
+```
+
+**影响分析：**
+- 由于原始代码中 CustomDataset 将数据放在 CPU，两者等效
+- 当前代码显式调用 `.cpu()` 是防御性编程，确保兼容性
+- **不影响实验结果**
+
+---
+
+## 8. 总结：当前可能导致实验结果差异的因素
 
 | 优先级 | 差异项 | 影响程度 | 当前状态 |
 |--------|--------|----------|----------|
 | **低** | DataLoader num_workers/pin_memory | 理论上不影响，但可能因环境差异产生轻微影响 | 仍存在 |
 | **低** | CustomDataset 设备分配 | 理论上不影响，但可能影响内存使用模式 | 仍存在 |
 | **无** | tensor_nan_inf 遗留函数 | 未被调用，不影响结果 | 建议清理 |
+| **无** | 非键边列表添加方式 | 代码风格差异，逻辑等效 | 不影响 |
+| **无** | 预测函数设备处理 | 防御性编程差异 | 不影响 |
 | ~~高~~ | ~~非键边距离条件~~ | ~~已复原~~ | ✅ 已解决 |
 | ~~中~~ | ~~NUM_EPOCHS~~ | ~~已复原~~ | ✅ 已解决 |
 
 ---
 
-## 8. 结论
+## 9. 结论
 
 当前重构后的代码与原始代码在以下方面仍然存在差异，但**这些差异理论上不应该影响实验结果**：
 
@@ -243,20 +294,24 @@ print(f"Epoch {epoch+1} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f
 **重要发现：**
 - 之前报告中识别的两个关键差异（非键边距离条件和NUM_EPOCHS）**已经复原**
 - `tensor_nan_inf()` 函数虽然存在但未被调用，不是导致差异的原因
+- 非键边列表添加方式（append vs extend）等效，不影响结果
+- 预测函数中的显式 `.cpu()` 调用是防御性编程，不影响结果
 
 **建议：**
 1. 如需完全对齐原始环境，可以将 DataLoader 参数改回 `num_workers=4, pin_memory=True`
 2. 建议清理未使用的 `tensor_nan_inf()` 函数
 3. 如果实验结果仍然存在差异，可能需要检查：
-   - 随机种子设置
+   - 随机种子设置（原始代码使用 `seed = 42`）
    - CUDA/cuDNN 版本差异
    - 其他依赖库版本差异
+   - 数据预处理缓存（建议删除 `data/processed/*.pth` 后重新运行）
 
 ---
 
-## 9. 历史修改记录
+## 10. 历史修改记录
 
 | 日期 | 修改内容 |
 |------|----------|
+| 2026-02-20 | 新增：非键边列表添加方式差异分析、预测函数设备处理差异分析；完善结论和建议 |
 | 2026-02-19 | 复查并更新：移除已复原的差异（非键边距离条件、NUM_EPOCHS），确认 tensor_nan_inf 未被调用，更新总结表格 |
 | (原日期) | 初始版本：识别所有重构前后差异 |

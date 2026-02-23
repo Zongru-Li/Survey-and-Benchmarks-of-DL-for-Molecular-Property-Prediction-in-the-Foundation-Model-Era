@@ -1,5 +1,4 @@
 model_select: "ka_gnn_two"
-select_dataset: "bace"
 force_field: 'uff'
 
 encoder_atom: "cgcnn"
