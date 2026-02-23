@@ -1,7 +1,7 @@
 # Deep Learning for Molecular Property Prediction in the Foundation Model Era
 
 <p align="center">
-  <img src="assets\figuresfig1_intro.png" alt="Overview and contributions of this survey. The survey constructs a unified framework that organizes over 100 deep learning methods for molecular property prediction across four axes: evolution, taxonomy, capability, and roadmap. " width="1000"/>
+  <img src="assets\figures\fig1_intro.png" alt="Overview and contributions of this survey. The survey constructs a unified framework that organizes over 100 deep learning methods for molecular property prediction across four axes: evolution, taxonomy, capability, and roadmap. " width="1000"/>
 </p>
 <p align="center">Overview and contributions of this survey. The survey constructs a unified framework that organizes over 100 deep learning methods for molecular property prediction across four axes: evolution, taxonomy, capability, and roadmap.</p>
 
@@ -19,7 +19,7 @@ If you find this project helpful, we kindly ask you to consider citing our work:
 ```
 
 <p align="center">
-  <img src="assets\figuresfig5_pipeline.png" alt="The pipeline of deep learning-driven MPP" width="1000"/>
+  <img src="assets\figures\fig5_pipeline.png" alt="The pipeline of deep learning-driven MPP" width="1000"/>
 </p>
 <p align="center">The pipeline of deep learning-driven MPP</p>
 
@@ -79,7 +79,7 @@ python src/run.py --config configs/ka_gnn.yaml --dataset bace --split scaffold -
 ## Representation Modalities
 
 <p align="center">
-  <img src="assets\figuresfig2_representation.png" alt="The representations of molecules" width="1000"/>
+  <img src="assets\figures\fig2_representation.png" alt="The representations of molecules" width="1000"/>
 </p>
 <p align="center">The representations of molecules</p>
 
@@ -181,7 +181,7 @@ python src/run.py --config configs/ka_gnn.yaml --dataset bace --split scaffold -
 ### Geometric GNNs
 
 <p align="center">
-  <img src="assets\figuresfig3_GNN.png" alt="Geometric GNN in MPP" width="1000"/>
+  <img src="assets\figures\fig3_GNN.png" alt="Geometric GNN in MPP" width="1000"/>
 </p>
 <p align="center">Geometric GNN in MPP</p>
 
@@ -202,7 +202,7 @@ python src/run.py --config configs/ka_gnn.yaml --dataset bace --split scaffold -
 ### Graph Transformers
 
 <p align="center">
-  <img src="assets\figuresfig4_Transformer.png" alt="Transformer in MPP" width="1000"/>
+  <img src="assets\figures\fig4_Transformer.png" alt="Transformer in MPP" width="1000"/>
 </p>
 <p align="center">Transformer in MPP</p>
 
