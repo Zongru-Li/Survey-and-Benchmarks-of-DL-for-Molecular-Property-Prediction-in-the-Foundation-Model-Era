@@ -1,10 +1,11 @@
+jarvis-tools==2026.1.10
 logzero==1.7.0
 networkx==3.6.1
 numpy==1.26.4
 pandas==3.0.1
 pykan==0.2.8
+pyyaml==6.0.3
 rdkit-pypi==2022.9.5
 ruamel-yaml==0.19.1
-jarvis-tools==2025.9.30
-pyyaml==6.0.3
 scikit-learn==1.8.0
+umap-learn==0.5.11

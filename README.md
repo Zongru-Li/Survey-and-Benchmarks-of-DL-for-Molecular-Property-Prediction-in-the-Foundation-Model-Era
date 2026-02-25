@@ -33,13 +33,15 @@ The experiments of this survey are conducted under following environment:
 
 Create conda environment:
 ```bash
-conda create -n molecule-py311 python=3.11 && conda activate molecule-py311
+conda create -n molecule-torch28-py311 python=3.11 && conda activate molecule-torch28-py311
 ```
 
 Install dependencies:
 ```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu128
-pip install  dgl -f https://data.dgl.ai/wheels/torch-2.4/cu124/repo.html
+pip install dgl -f https://data.dgl.ai/wheels/torch-2.4/cu124/repo.html
+pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+pip install torch_geometric
+pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.8.0+cu128.html
 pip install -r requirements.txt
 ```
 

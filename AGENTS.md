@@ -63,6 +63,13 @@ Global settings in `configs/common.py`: `device`, `seed`, `cuda` config.
 
 ## Code Style Guidelines
 
+### References
+The projects under folder `references` are open sources project to current experiments. Explore them when developing or modifing models/methods, but DO NOT directly import them to your project. Launch online search if helpful.
+
+Projects under `references`:
+- [cheminfo](https://github.com/PatWalters/practical_cheminformatics_posts)
+- [deepchem](https://github.com/deepchem/deepchem)
+
 ### Import Order
 ```python
 # 1. Standard library (alphabetical)
