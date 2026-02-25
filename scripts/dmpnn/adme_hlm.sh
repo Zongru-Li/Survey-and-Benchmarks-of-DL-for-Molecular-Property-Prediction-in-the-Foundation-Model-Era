@@ -7,8 +7,8 @@ cd "$(dirname "$0")/../.."
 # Splits: scaffold, butina, umap, time
 # Epochs: 501
 
-python src/run.py --config configs/dmpnn.yaml --dataset adme_hlm --split scaffold --epochs 501 &
-python src/run.py --config configs/dmpnn.yaml --dataset adme_hlm --split butina --epochs 501 &
+# python src/run.py --config configs/dmpnn.yaml --dataset adme_hlm --split scaffold --epochs 501 &
+# python src/run.py --config configs/dmpnn.yaml --dataset adme_hlm --split butina --epochs 501 &
 python src/run.py --config configs/dmpnn.yaml --dataset adme_hlm --split umap --epochs 501 &
 python src/run.py --config configs/dmpnn.yaml --dataset adme_hlm --split time --epochs 501 &
 wait

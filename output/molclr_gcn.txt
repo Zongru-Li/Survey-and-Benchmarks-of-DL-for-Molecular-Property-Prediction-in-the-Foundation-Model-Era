@@ -1,0 +1,10 @@
+(adme_sol)
+molclr_gcn_data:adme_sol_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.4819
+
+(adme_hlm)
+molclr_gcn_data:adme_hlm_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.1682
+molclr_gcn_data:adme_hlm_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.3931
+

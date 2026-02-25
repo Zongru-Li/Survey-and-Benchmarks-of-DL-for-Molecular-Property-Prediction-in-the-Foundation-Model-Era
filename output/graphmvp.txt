@@ -1,0 +1,10 @@
+(adme_sol)
+graphmvp_data:adme_sol_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.5315
+
+(adme_hlm)
+graphmvp_data:adme_hlm_split:scaffold_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.2903
+graphmvp_data:adme_hlm_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3289
+

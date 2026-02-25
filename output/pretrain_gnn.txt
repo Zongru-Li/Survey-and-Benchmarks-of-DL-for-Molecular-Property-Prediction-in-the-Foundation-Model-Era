@@ -1,0 +1,10 @@
+(adme_sol)
+pretrain_gnn_data:adme_sol_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.5615
+
+(adme_hlm)
+pretrain_gnn_data:adme_hlm_split:scaffold_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.2965
+pretrain_gnn_data:adme_hlm_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.1316
+

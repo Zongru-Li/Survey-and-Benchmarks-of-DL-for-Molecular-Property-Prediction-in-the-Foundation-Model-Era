@@ -1,0 +1,15 @@
+(adme_sol)
+kagnn_data:adme_sol_split:scaffold_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5653
+kagnn_data:adme_sol_split:butina_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4175
+kagnn_data:adme_sol_split:umap_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4927
+
+(adme_hlm)
+kagnn_data:adme_hlm_split:scaffold_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.3787
+kagnn_data:adme_hlm_split:butina_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.3579
+
+

@@ -1,0 +1,14 @@
+(adme_sol)
+kagat_data:adme_sol_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4687
+kagat_data:adme_sol_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5996
+kagat_data:adme_sol_split:umap_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4765
+
+(adme_hlm)
+kagat_data:adme_hlm_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.3710
+kagat_data:adme_hlm_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.3642
+

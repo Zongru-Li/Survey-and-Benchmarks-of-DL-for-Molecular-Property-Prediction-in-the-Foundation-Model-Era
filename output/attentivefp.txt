@@ -1,0 +1,12 @@
+(adme_sol)
+attentivefp_data:adme_sol_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4617
+attentivefp_data:adme_sol_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4148
+
+(adme_hlm)
+attentivefp_data:adme_hlm_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5203
+attentivefp_data:adme_hlm_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5176
+
