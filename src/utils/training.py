@@ -10,6 +10,7 @@ from torch.optim.lr_scheduler import StepLR
 from logzero import logger
 
 from src.utils.data import update_node_features
+from src.models import is_pyg_model, PYG_MODELS
 
 
 def get_loss_fn(loss_type: str):
@@ -119,6 +120,119 @@ def validate_epoch_gat(model, device, valid_loader, loss_fn):
             total_loss_val += valid_loss.item()
     
     return total_loss_val
+
+
+def train_epoch_pyg(model, device, train_loader, optimizer, loss_fn):
+    model.train()
+    total_train_loss = 0.0
+    
+    for batch_idx, data in enumerate(train_loader):
+        optimizer.zero_grad()
+        data = data.to(device)
+        y = data.y.to(device)
+        out = model(data)
+        
+        y = y.to(dtype=out.dtype)
+        if y.dim() == 1:
+            y = y.unsqueeze(1)
+        
+        mask = (y != -1).to(dtype=out.dtype)
+        y_clean = torch.where(y == -1, torch.zeros_like(y), y)
+        
+        loss_elem = loss_fn(out, y_clean)
+        loss = (loss_elem * mask).sum() / mask.sum().clamp_min(1.0)
+        
+        loss.backward()
+        optimizer.step()
+        total_train_loss += loss.item()
+    
+    return total_train_loss
+
+
+def validate_epoch_pyg(model, device, valid_loader, loss_fn):
+    model.eval()
+    total_loss_val = 0.0
+    
+    with torch.no_grad():
+        for batch_idx, data in enumerate(valid_loader):
+            data = data.to(device)
+            y = data.y.to(device)
+            out = model(data)
+            
+            y = y.to(dtype=out.dtype)
+            if y.dim() == 1:
+                y = y.unsqueeze(1)
+            
+            mask = (y != -1).to(dtype=out.dtype)
+            y_clean = torch.where(y == -1, torch.zeros_like(y), y)
+            
+            loss_elem = loss_fn(out, y_clean)
+            vloss = (loss_elem * mask).sum() / mask.sum().clamp_min(1.0)
+            total_loss_val += vloss.item()
+    
+    return total_loss_val
+
+
+def predict_pyg(model, device, data_loader):
+    model.eval()
+    total_preds = torch.Tensor().cpu()
+    total_labels = torch.Tensor().cpu()
+    
+    with torch.no_grad():
+        for batch_idx, data in enumerate(data_loader):
+            data = data.to(device)
+            y = data.y.cpu()
+            output = model(data).cpu()
+            
+            if y.dim() == 1:
+                y = y.unsqueeze(1)
+            
+            arr_label = torch.Tensor().cpu()
+            arr_pred = torch.Tensor().cpu()
+            for j in range(y.shape[1]):
+                c_valid = np.ones_like(y[:, j], dtype=bool)
+                c_label, c_pred = y[c_valid, j], output[c_valid, j]
+                zero = torch.zeros_like(c_label)
+                c_label = torch.where(c_label == -1, zero, c_label)
+                arr_label = torch.cat((arr_label, c_label), 0)
+                arr_pred = torch.cat((arr_pred, c_pred), 0)
+            
+            total_preds = torch.cat((total_preds, arr_pred), 0)
+            total_labels = torch.cat((total_labels, arr_label), 0)
+    
+    AUC = roc_auc_score(total_labels.numpy().flatten(), total_preds.numpy().flatten())
+    return AUC
+
+
+def predict_pyg_regression(model, device, data_loader):
+    model.eval()
+    total_preds = torch.Tensor().cpu()
+    total_labels = torch.Tensor().cpu()
+    
+    with torch.no_grad():
+        for batch_idx, data in enumerate(data_loader):
+            data = data.to(device)
+            y = data.y.cpu()
+            output = model(data).cpu()
+            
+            if y.dim() == 1:
+                y = y.unsqueeze(1)
+            
+            arr_label = torch.Tensor().cpu()
+            arr_pred = torch.Tensor().cpu()
+            for j in range(y.shape[1]):
+                c_valid = np.ones_like(y[:, j], dtype=bool)
+                c_label, c_pred = y[c_valid, j], output[c_valid, j]
+                zero = torch.zeros_like(c_label)
+                c_label = torch.where(c_label == -1, zero, c_label)
+                arr_label = torch.cat((arr_label, c_label), 0)
+                arr_pred = torch.cat((arr_pred, c_pred), 0)
+            
+            total_preds = torch.cat((total_preds, arr_pred), 0)
+            total_labels = torch.cat((total_labels, arr_label), 0)
+    
+    r = pearsonr(total_labels.numpy().flatten(), total_preds.numpy().flatten())[0]
+    return r
 
 
 def predict_gnn(model, device, data_loader):
@@ -262,7 +376,12 @@ def train_model(
     
     loss_fn = get_loss_fn(loss_type)
     
-    is_gnn_model = model_name in ['ka_gnn', 'ka_gnn_two', 'mlp_sage', 'mlp_sage_two', 'kan_sage', 'kan_sage_two']
+    is_pyg = is_pyg_model(model_name)
+    is_gnn_model = model_name in [
+        'ka_gnn', 'ka_gnn_two', 'mlp_sage', 'mlp_sage_two', 
+        'kan_sage', 'kan_sage_two', 'dmpnn', 'attentivefp',
+        'mol_gdl', 'ngram_rf', 'ngram_xgb'
+    ]
     is_regression = task_type == 'regression'
     
     if is_regression:
@@ -283,7 +402,16 @@ def train_model(
         best_score = float('-inf') if is_regression else 0
         
         for epoch in range(epochs):
-            if is_gnn_model:
+            if is_pyg:
+                train_loss = train_epoch_pyg(model, device, train_loader, optimizer, loss_fn)
+                if val_loader:
+                    val_loss = validate_epoch_pyg(model, device, val_loader, loss_fn)
+                    print(f"Epoch {epoch+1} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}", flush=True)
+                if is_regression:
+                    score = predict_pyg_regression(model, device, test_loader)
+                else:
+                    score = predict_pyg(model, device, test_loader)
+            elif is_gnn_model:
                 train_loss = train_epoch_gnn(model, device, train_loader, optimizer, loss_fn)
                 if val_loader:
                     val_loss = validate_epoch_gnn(model, device, val_loader, loss_fn)

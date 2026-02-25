@@ -67,8 +67,8 @@ def add_common_args(parser):
         "--split",
         type=str,
         default=None,
-        choices=["random", "scaffold", "umap", "butina"],
-        help="Dataset split type (random, scaffold, umap, butina)",
+        choices=["random", "scaffold", "umap", "butina", "time"],
+        help="Dataset split type (random, scaffold, umap, butina, time)",
     )
     parser.add_argument(
         "--checkpoint",

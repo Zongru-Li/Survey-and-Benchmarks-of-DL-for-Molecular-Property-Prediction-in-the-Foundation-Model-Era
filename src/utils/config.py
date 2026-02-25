@@ -13,6 +13,7 @@ def load_common_config() -> Dict[str, Any]:
         config = {}
         with open(common_path, 'r') as f:
             exec(f.read(), {"__builtins__": {}}, config)
+        config = {k: v for k, v in config.items() if not callable(v)}
         return config
     return {}
 
@@ -52,6 +53,10 @@ def load_model_config(config_path: str) -> Dict[str, Any]:
         merged['model']['num_heads'] = model_config['head']
     if 'num_layers' in model_config:
         merged['model']['num_layers'] = model_config['num_layers']
+    if 'dropout_ratio' in model_config:
+        merged['model']['dropout_ratio'] = model_config['dropout_ratio']
+    if 'feat_dim' in model_config:
+        merged['model']['feat_dim'] = model_config['feat_dim']
     if 'LR' in model_config:
         merged['training']['learning_rate'] = model_config['LR']
     if 'NUM_EPOCHS' in model_config:
@@ -66,6 +71,16 @@ def load_model_config(config_path: str) -> Dict[str, Any]:
         merged['training']['test_ratio'] = model_config['test_ratio']
     if 'iter' in model_config:
         merged['training']['iterations'] = model_config['iter']
+    if 'hidden_feat' in model_config:
+        merged['model']['hidden_feat'] = model_config['hidden_feat']
+    if 'out_feat' in model_config:
+        merged['model']['out_feat'] = model_config['out_feat']
+    if 'K' in model_config:
+        merged['model']['K'] = model_config['K']
+    if 'grid_size' in model_config:
+        merged['model']['grid_size'] = model_config['grid_size']
+    if 'spline_order' in model_config:
+        merged['model']['spline_order'] = model_config['spline_order']
     
     return merged
 

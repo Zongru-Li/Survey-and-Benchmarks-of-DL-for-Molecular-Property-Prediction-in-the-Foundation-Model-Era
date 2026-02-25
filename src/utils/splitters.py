@@ -413,3 +413,38 @@ class UMAPSplitter(Splitter):
         test_dataset = [dataset[valid_indices[i]] for i in test_idx]
         
         return train_dataset, valid_dataset, test_dataset
+
+
+class TimeSplitter(Splitter):
+    """
+    Time-based dataset splitter for temporal validation.
+    
+    Splits data by index assuming data is already ordered by time.
+    This is useful when the dataset has implicit temporal ordering
+    (e.g., molecules collected/assayed over time).
+    
+    The earliest samples go to training, middle to validation,
+    and latest to test set, mimicking real-world temporal deployment.
+    """
+    
+    def __init__(self):
+        super().__init__()
+    
+    def split(self, dataset, frac_train=0.8, frac_valid=0.1, frac_test=0.1, seed=None):
+        np.testing.assert_almost_equal(frac_train + frac_valid + frac_test, 1.0)
+        N = len(dataset)
+        
+        indices = list(range(N))
+        
+        train_cutoff = int(frac_train * N)
+        valid_cutoff = int((frac_train + frac_valid) * N)
+        
+        train_idx = indices[:train_cutoff]
+        valid_idx = indices[train_cutoff:valid_cutoff]
+        test_idx = indices[valid_cutoff:]
+        
+        train_dataset = [dataset[i] for i in train_idx]
+        valid_dataset = [dataset[i] for i in valid_idx]
+        test_dataset = [dataset[i] for i in test_idx]
+        
+        return train_dataset, valid_dataset, test_dataset

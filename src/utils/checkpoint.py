@@ -4,6 +4,14 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 
+def get_output_model_name(model_name: str) -> str:
+    name_mapping = {
+        'ka_gnn': 'kagnn',
+        'ka_gnn_two': 'kagnn_two',
+    }
+    return name_mapping.get(model_name, model_name)
+
+
 def format_param_value(value: Any) -> str:
     if isinstance(value, float):
         formatted = f"{value:.6f}".rstrip('0').rstrip('.')
@@ -13,6 +21,7 @@ def format_param_value(value: Any) -> str:
 
 def get_checkpoint_path(model_name: str, params: Dict[str, Any]) -> Path:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_name = get_output_model_name(model_name)
     
     key_mapping = {
         'dataset': 'data',
@@ -32,9 +41,9 @@ def get_checkpoint_path(model_name: str, params: Dict[str, Any]) -> Path:
             param_parts.append(f"{short_key}:{value}")
     
     param_suffix = "_".join(param_parts)
-    filename = f"{model_name}_{timestamp}_{param_suffix}.pth"
+    filename = f"{output_name}_{timestamp}_{param_suffix}.pth"
     
-    checkpoint_dir = Path("tmp/checkpoints") / model_name
+    checkpoint_dir = Path("tmp/checkpoints") / output_name
     checkpoint_dir.mkdir(parents=True, exist_ok=True)
     
     return checkpoint_dir / filename

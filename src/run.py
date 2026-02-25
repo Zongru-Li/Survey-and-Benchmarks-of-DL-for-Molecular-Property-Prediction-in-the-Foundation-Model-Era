@@ -53,13 +53,25 @@ def setup_model_config(config):
     target_dim = get_target_dim(config["data"]["dataset"])
 
     config["model"]["out_dim"] = target_dim
-    config["model"]["hidden_feat"] = 64
-    config["model"]["out_feat"] = 32
 
     if model_name in PYG_MODELS:
+        config["model"]["hidden_feat"] = 150
+        config["model"]["out_feat"] = 128
         config["model"]["in_feat"] = 113
         config["model"]["in_node_dim"] = None
         config["model"]["in_edge_dim"] = None
+    elif model_name == "dmpnn":
+        config["model"]["hidden_feat"] = 150
+        config["model"]["out_feat"] = 128
+        config["model"]["in_feat"] = 113
+        config["model"]["in_node_dim"] = 92
+        config["model"]["in_edge_dim"] = 21
+    elif model_name == "attentivefp":
+        config["model"]["hidden_feat"] = 100
+        config["model"]["out_feat"] = 64
+        config["model"]["in_feat"] = 113
+        config["model"]["in_node_dim"] = 92
+        config["model"]["in_edge_dim"] = 21
     elif model_name in [
         "ka_gnn",
         "ka_gnn_two",
@@ -68,10 +80,14 @@ def setup_model_config(config):
         "kan_sage",
         "kan_sage_two",
     ]:
+        config["model"]["hidden_feat"] = 64
+        config["model"]["out_feat"] = 32
         config["model"]["in_feat"] = 113
         config["model"]["in_node_dim"] = None
         config["model"]["in_edge_dim"] = None
     else:
+        config["model"]["hidden_feat"] = 64
+        config["model"]["out_feat"] = 32
         config["model"]["in_feat"] = 113
         config["model"]["in_node_dim"] = 92
         config["model"]["in_edge_dim"] = 21
