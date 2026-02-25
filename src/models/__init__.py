@@ -1,4 +1,4 @@
-from src.models.base import BaseModel
+from src.models.base import BaseModel as BaseModel
 from src.models.ka_gnn import KA_GNN, KA_GNN_two
 from src.models.mlp_sage import MLPGNN, MLPGNN_two
 from src.models.kan_sage import KANGNN, KANGNN_two
@@ -6,6 +6,27 @@ from src.models.ka_gat import KA_GAT
 from src.models.mlp_gat import MLP_GAT
 from src.models.kan_gat import KAN_GAT
 from src.models.po_gat import PO_GAT
+from src.models.dmpnn import DMPNN
+from src.models.attentivefp import AttentiveFP
+from src.models.mol_gdl import MolGDL
+from src.models.ngram import NgramRF, NgramXGB
+from src.models.pretrain_gnn import PretrainGNN
+from src.models.graphmvp import GraphMVP
+from src.models.molclr import MolCLR_GCN, MolCLR_GIN
+from src.models.graphkan import GraphKAN
+
+
+__all__ = [
+    'BaseModel',
+    'KA_GNN', 'KA_GNN_two',
+    'MLPGNN', 'MLPGNN_two',
+    'KANGNN', 'KANGNN_two',
+    'KA_GAT', 'MLP_GAT', 'KAN_GAT', 'PO_GAT',
+    'DMPNN', 'AttentiveFP',
+    'MolGDL', 'NgramRF', 'NgramXGB',
+    'PretrainGNN', 'GraphMVP', 'MolCLR_GCN', 'MolCLR_GIN', 'GraphKAN',
+    'MODEL_REGISTRY', 'get_model', 'is_pyg_model',
+]
 
 
 MODEL_REGISTRY = {
@@ -19,7 +40,34 @@ MODEL_REGISTRY = {
     'mlpgat': MLP_GAT,
     'kangat': KAN_GAT,
     'pogat': PO_GAT,
+    'dmpnn': DMPNN,
+    'attentivefp': AttentiveFP,
+    'mol_gdl': MolGDL,
+    'ngram_rf': NgramRF,
+    'ngram_xgb': NgramXGB,
+    'pretrain_gnn': PretrainGNN,
+    'graphmvp': GraphMVP,
+    'molclr_gcn': MolCLR_GCN,
+    'molclr_gin': MolCLR_GIN,
+    'graphkan': GraphKAN,
 }
+
+
+PYG_MODELS = ['pretrain_gnn', 'graphmvp', 'molclr_gcn', 'molclr_gin', 'graphkan']
+PYG_MODELS_WITH_FEAT_DIM = ['molclr_gcn', 'molclr_gin']
+PYG_MODELS_WITH_KAN = ['graphkan']
+
+DGL_GNN_MODELS = [
+    'ka_gnn', 'ka_gnn_two', 'mlp_sage', 'mlp_sage_two', 
+    'kan_sage', 'kan_sage_two', 'dmpnn', 'attentivefp',
+    'mol_gdl', 'ngram_rf', 'ngram_xgb'
+]
+
+DGL_GAT_MODELS = ['kagat', 'mlpgat', 'kangat', 'pogat']
+
+
+def is_pyg_model(model_name: str) -> bool:
+    return model_name in PYG_MODELS
 
 
 def get_model(config):
@@ -29,7 +77,47 @@ def get_model(config):
     
     model_class = MODEL_REGISTRY[model_name]
     
-    if model_name in ['ka_gnn', 'ka_gnn_two', 'mlp_sage', 'mlp_sage_two', 'kan_sage', 'kan_sage_two']:
+    if model_name in PYG_MODELS_WITH_FEAT_DIM:
+        return model_class(
+            in_feat=config['model'].get('in_feat', 113),
+            hidden_feat=config['model']['hidden_feat'],
+            out_feat=config['model'].get('out_feat', 32),
+            out=config['model']['out_dim'],
+            grid_feat=config['model'].get('grid_feat', 1),
+            num_layers=config['model']['num_layers'],
+            pooling=config['model']['pooling'],
+            use_bias=config['model'].get('use_bias', False),
+            drop_ratio=config['model'].get('dropout_ratio', 0.3),
+            feat_dim=config['model'].get('feat_dim', 256),
+        )
+    elif model_name in PYG_MODELS_WITH_KAN:
+        return model_class(
+            in_feat=config['model'].get('in_feat', 113),
+            hidden_feat=config['model']['hidden_feat'],
+            out_feat=config['model'].get('out_feat', 32),
+            out=config['model']['out_dim'],
+            grid_feat=config['model'].get('grid_feat', 1),
+            num_layers=config['model']['num_layers'],
+            pooling=config['model']['pooling'],
+            use_bias=config['model'].get('use_bias', False),
+            drop_ratio=config['model'].get('dropout_ratio', 0.3),
+            K=config['model'].get('K', 3),
+            grid_size=config['model'].get('grid_size', 5),
+            spline_order=config['model'].get('spline_order', 3),
+        )
+    elif model_name in PYG_MODELS:
+        return model_class(
+            in_feat=config['model'].get('in_feat', 113),
+            hidden_feat=config['model']['hidden_feat'],
+            out_feat=config['model'].get('out_feat', 32),
+            out=config['model']['out_dim'],
+            grid_feat=config['model'].get('grid_feat', 1),
+            num_layers=config['model']['num_layers'],
+            pooling=config['model']['pooling'],
+            use_bias=config['model'].get('use_bias', False),
+            drop_ratio=config['model'].get('dropout_ratio', 0.5),
+        )
+    elif model_name in DGL_GNN_MODELS:
         return model_class(
             in_feat=config['model']['in_feat'],
             hidden_feat=config['model']['hidden_feat'],

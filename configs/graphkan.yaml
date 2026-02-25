@@ -1,0 +1,24 @@
+model_select: "graphkan"
+force_field: 'uff'
+
+encoder_atom: "cgcnn"
+encoder_bond: "dim_14"
+
+pooling: 'mean'
+loss_sclect: 'bce'
+grid_feat: 1
+num_layers: 3
+hidden_feat: 256
+out_feat: 128
+dropout_ratio: 0.1
+K: 1
+grid_size: 5
+spline_order: 3
+
+LR: 0.001
+NUM_EPOCHS: 300
+batch_size: 128
+train_ratio: 0.8
+vali_ratio: 0.1
+test_ratio: 0.1
+iter: 1
