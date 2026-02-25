@@ -15,4 +15,4 @@ batch_size: 128
 train_ratio: 0.8
 vali_ratio: 0.1
 test_ratio: 0.1
-iter: 5
+iter: 1

@@ -27,9 +27,9 @@ class RandomSplitter(Splitter):
         rng.shuffle(indices)
         train_cutoff = int(frac_train * N)
         valid_cutoff = int((frac_train + frac_valid) * N)
-        train_dataset = dataset[indices[:train_cutoff]]
-        valid_dataset = dataset[indices[train_cutoff:valid_cutoff]]
-        test_dataset = dataset[indices[valid_cutoff:]]
+        train_dataset = [dataset[i] for i in indices[:train_cutoff]]
+        valid_dataset = [dataset[i] for i in indices[train_cutoff:valid_cutoff]]
+        test_dataset = [dataset[i] for i in indices[valid_cutoff:]]
         return train_dataset, valid_dataset, test_dataset
 
 
@@ -127,6 +127,109 @@ class RandomScaffoldSplitter(Splitter):
         train_dataset = dataset[train_idx]
         valid_dataset = dataset[valid_idx]
         test_dataset = dataset[test_idx]
+        return train_dataset, valid_dataset, test_dataset
+
+
+class ButinaSplitter(Splitter):
+    """
+    Butina clustering-based dataset splitter using Tanimoto similarity.
+    
+    This splitter uses the Butina clustering algorithm (Taylor-Butina clustering)
+    to group similar molecules based on their Morgan fingerprints, then assigns
+    entire clusters to train/valid/test sets to ensure chemical dissimilarity
+    between splits.
+    
+    Reference: Butina, D. "Unsupervised Data Base Clustering Based on 
+    Daylight's Fingerprint and Tanimoto Similarity: A Fast and Automated 
+    Way To Cluster Small and Large Data Sets." J. Chem. Inf. Comput. Sci. 
+    1999, 39, 4, 747–750.
+    
+    Parameters
+    ----------
+    cutoff : float, default 0.6
+        Tanimoto similarity cutoff for clustering. Molecules with similarity
+        above this threshold tend to be clustered together. Lower values
+        produce smaller, tighter clusters; higher values produce larger,
+        coarser clusters.
+    fp_radius : int, default 2
+        Radius for Morgan fingerprints.
+    fp_bits : int, default 1024
+        Number of bits for Morgan fingerprints.
+    """
+    
+    def __init__(self, cutoff: float = 0.6, fp_radius: int = 2, fp_bits: int = 1024):
+        super().__init__()
+        self.cutoff = cutoff
+        self.fp_radius = fp_radius
+        self.fp_bits = fp_bits
+    
+    def _get_fingerprints(self, dataset):
+        from rdkit import Chem
+        from rdkit.Chem import AllChem
+        
+        fps = []
+        valid_indices = []
+        for i, item in enumerate(dataset):
+            smiles = item[0]
+            mol = Chem.MolFromSmiles(smiles)
+            if mol is not None:
+                fp = AllChem.GetMorganFingerprintAsBitVect(
+                    mol, self.fp_radius, nBits=self.fp_bits
+                )
+                fps.append(fp)
+                valid_indices.append(i)
+        return fps, valid_indices
+    
+    def split(self, dataset, frac_train=0.8, frac_valid=0.1, frac_test=0.1, seed=None):
+        np.testing.assert_almost_equal(frac_train + frac_valid + frac_test, 1.0)
+        
+        try:
+            from rdkit import DataStructs
+            from rdkit.ML.Cluster import Butina
+        except ImportError:
+            raise ImportError("RDKit is required for ButinaSplitter")
+        
+        fps, valid_indices = self._get_fingerprints(dataset)
+        N = len(valid_indices)
+        
+        if N < 3:
+            train_cutoff = int(frac_train * N)
+            valid_cutoff = int((frac_train + frac_valid) * N)
+            return (
+                [dataset[valid_indices[i]] for i in range(train_cutoff)],
+                [dataset[valid_indices[i]] for i in range(train_cutoff, valid_cutoff)],
+                [dataset[valid_indices[i]] for i in range(valid_cutoff, N)]
+            )
+        
+        dists = []
+        nfps = len(fps)
+        for i in range(1, nfps):
+            sims = DataStructs.BulkTanimotoSimilarity(fps[i], fps[:i])
+            dists.extend([1 - x for x in sims])
+        
+        cluster_data = Butina.ClusterData(dists, nfps, self.cutoff, isDistData=True)
+        cluster_sets = sorted(cluster_data, key=lambda x: -len(x))
+        
+        train_cutoff = frac_train * N
+        valid_cutoff = (frac_train + frac_valid) * N
+        
+        train_idx = []
+        valid_idx = []
+        test_idx = []
+        
+        for cluster_set in cluster_sets:
+            if len(train_idx) + len(cluster_set) > train_cutoff:
+                if len(train_idx) + len(valid_idx) + len(cluster_set) > valid_cutoff:
+                    test_idx.extend(cluster_set)
+                else:
+                    valid_idx.extend(cluster_set)
+            else:
+                train_idx.extend(cluster_set)
+        
+        train_dataset = [dataset[valid_indices[i]] for i in train_idx]
+        valid_dataset = [dataset[valid_indices[i]] for i in valid_idx]
+        test_dataset = [dataset[valid_indices[i]] for i in test_idx]
+        
         return train_dataset, valid_dataset, test_dataset
 
 

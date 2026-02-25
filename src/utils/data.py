@@ -8,13 +8,14 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.metrics import roc_auc_score
 
 from src.utils.graph import path_complex_mol
-from src.utils.splitters import RandomSplitter, ScaffoldSplitter, UMAPSplitter
+from src.utils.splitters import RandomSplitter, ScaffoldSplitter, UMAPSplitter, ButinaSplitter
 
 
 SPLITTER_MAP = {
     'random': RandomSplitter,
     'scaffold': ScaffoldSplitter,
     'umap': UMAPSplitter,
+    'butina': ButinaSplitter,
 }
 
 ADME_TARGETS = {
