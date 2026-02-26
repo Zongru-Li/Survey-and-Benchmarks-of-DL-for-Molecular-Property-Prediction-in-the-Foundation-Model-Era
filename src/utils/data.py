@@ -511,7 +511,7 @@ def create_dataloader(
         shuffle=state["shuffle"],
         num_workers=0,
         pin_memory=False,
-        drop_last=True,
+        drop_last=False,
         collate_fn=collate,
     )
 
@@ -524,7 +524,7 @@ def create_dataloader(
             shuffle=state["shuffle"],
             num_workers=0,
             pin_memory=False,
-            drop_last=True,
+            drop_last=False,
             collate_fn=collate,
         )
 
@@ -534,7 +534,7 @@ def create_dataloader(
         shuffle=state["shuffle"],
         num_workers=0,
         pin_memory=False,
-        drop_last=True,
+        drop_last=False,
         collate_fn=collate,
     )
 

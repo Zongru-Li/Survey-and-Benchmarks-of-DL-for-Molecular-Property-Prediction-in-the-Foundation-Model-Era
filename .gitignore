@@ -8,4 +8,6 @@ __pycache__/
 
 assets/prompt.txt
 
+nohup.out
+
 .ruff_cache

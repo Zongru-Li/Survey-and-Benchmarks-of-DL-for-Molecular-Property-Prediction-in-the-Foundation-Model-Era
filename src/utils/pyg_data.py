@@ -366,7 +366,7 @@ def create_pyg_dataloader(
         shuffle=state["shuffle"],
         num_workers=0,
         pin_memory=False,
-        drop_last=True,
+        drop_last=False,
     )
 
     if val_ratio == 0.0:
@@ -378,7 +378,7 @@ def create_pyg_dataloader(
             shuffle=state["shuffle"],
             num_workers=0,
             pin_memory=False,
-            drop_last=True,
+            drop_last=False,
         )
 
     test_loader = PyGDataLoader(
@@ -387,7 +387,7 @@ def create_pyg_dataloader(
         shuffle=state["shuffle"],
         num_workers=0,
         pin_memory=False,
-        drop_last=True,
+        drop_last=False,
     )
 
     print(f"[INFO] PyG Dataset was loaded (split={split_type})!", flush=True)
