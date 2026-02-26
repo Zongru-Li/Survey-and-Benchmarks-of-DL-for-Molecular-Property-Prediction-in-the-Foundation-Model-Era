@@ -4,7 +4,7 @@ PearsonR:0.1682
 molclr_gcn_data:adme_hlm_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.3931
 molclr_gcn_data:adme_hlm_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.1900
+PearsonR:0.3245
 molclr_gcn_data:adme_hlm_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.1756
 
@@ -14,7 +14,7 @@ PearsonR:0.1320
 molclr_gcn_data:adme_rlm_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.1373
 molclr_gcn_data:adme_rlm_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.1412
+PearsonR:0.1583
 molclr_gcn_data:adme_rlm_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.1363
 
@@ -24,7 +24,7 @@ PearsonR:0.6629
 molclr_gcn_data:adme_mdr1_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.5722
 molclr_gcn_data:adme_mdr1_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.4410
+PearsonR:0.4196
 molclr_gcn_data:adme_mdr1_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.6235
 
@@ -34,6 +34,27 @@ PearsonR:0.4838
 molclr_gcn_data:adme_sol_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.4819
 molclr_gcn_data:adme_sol_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.4360
+PearsonR:0.4313
 molclr_gcn_data:adme_sol_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.5097
+
+(adme_hppb)
+molclr_gcn_data:adme_hppb_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.7106
+molclr_gcn_data:adme_hppb_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.8419
+molclr_gcn_data:adme_hppb_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.4239
+molclr_gcn_data:adme_hppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.9212
+
+(adme_rppb)
+molclr_gcn_data:adme_rppb_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.6135
+molclr_gcn_data:adme_rppb_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.6752
+molclr_gcn_data:adme_rppb_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.7056
+molclr_gcn_data:adme_rppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.6728
+

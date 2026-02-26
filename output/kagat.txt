@@ -39,12 +39,20 @@ kagat_data:adme_sol_split:time_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4719
 
 (adme_hppb)
+kagat_data:adme_hppb_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6319
+kagat_data:adme_hppb_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5710
 kagat_data:adme_hppb_split:umap_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4562
 kagat_data:adme_hppb_split:time_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.7100
 
 (adme_rppb)
+kagat_data:adme_rppb_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6651
+kagat_data:adme_rppb_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5482
 kagat_data:adme_rppb_split:umap_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4585
 kagat_data:adme_rppb_split:time_nl:2_lr:0.0001_bs:128_ep:501_iter:1

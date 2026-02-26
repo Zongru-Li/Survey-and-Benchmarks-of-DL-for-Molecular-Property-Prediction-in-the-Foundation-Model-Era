@@ -4,7 +4,7 @@ PearsonR:0.2884
 ngram_xgb_data:adme_hlm_split:butina_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.3304
 ngram_xgb_data:adme_hlm_split:umap_nl:3_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.3163
+PearsonR:0.2975
 ngram_xgb_data:adme_hlm_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2724
 
@@ -14,7 +14,7 @@ PearsonR:0.1371
 ngram_xgb_data:adme_rlm_split:butina_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2317
 ngram_xgb_data:adme_rlm_split:umap_nl:3_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.1976
+PearsonR:0.1597
 ngram_xgb_data:adme_rlm_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2217
 
@@ -24,9 +24,13 @@ PearsonR:0.3015
 ngram_xgb_data:adme_mdr1_split:butina_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.3201
 ngram_xgb_data:adme_mdr1_split:umap_nl:3_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.3031
+PearsonR:0.2776
 ngram_xgb_data:adme_mdr1_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2737
+
+(adme_sol)
+ngram_xgb_data:adme_sol_split:umap_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3494
 
 (adme_hppb)
 ngram_xgb_data:adme_hppb_split:umap_nl:3_lr:0.001_bs:128_ep:501_iter:1

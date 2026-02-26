@@ -4,7 +4,7 @@ PearsonR:0.2903
 graphmvp_data:adme_hlm_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.3289
 graphmvp_data:adme_hlm_split:umap_nl:5_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.3498
+PearsonR:0.2798
 graphmvp_data:adme_hlm_split:time_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2673
 
@@ -14,7 +14,7 @@ PearsonR:0.2104
 graphmvp_data:adme_rlm_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2089
 graphmvp_data:adme_rlm_split:umap_nl:5_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.1234
+PearsonR:0.1192
 graphmvp_data:adme_rlm_split:time_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.1501
 
@@ -24,7 +24,7 @@ PearsonR:0.6362
 graphmvp_data:adme_mdr1_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.5528
 graphmvp_data:adme_mdr1_split:umap_nl:5_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.4597
+PearsonR:0.4691
 graphmvp_data:adme_mdr1_split:time_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.6122
 
@@ -34,6 +34,27 @@ PearsonR:0.5062
 graphmvp_data:adme_sol_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.5315
 graphmvp_data:adme_sol_split:umap_nl:5_lr:0.001_bs:128_ep:501_iter:1
-PearsonR:0.5467
+PearsonR:0.5311
 graphmvp_data:adme_sol_split:time_nl:5_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.5589
+
+(adme_hppb)
+graphmvp_data:adme_hppb_split:scaffold_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.8964
+graphmvp_data:adme_hppb_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.6707
+graphmvp_data:adme_hppb_split:umap_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.4814
+graphmvp_data:adme_hppb_split:time_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.6271
+
+(adme_rppb)
+graphmvp_data:adme_rppb_split:scaffold_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.8419
+graphmvp_data:adme_rppb_split:butina_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.7838
+graphmvp_data:adme_rppb_split:umap_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.6891
+graphmvp_data:adme_rppb_split:time_nl:5_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.5528
+

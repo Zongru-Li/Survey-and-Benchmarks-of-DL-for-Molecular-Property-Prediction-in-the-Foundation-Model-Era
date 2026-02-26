@@ -4,7 +4,7 @@ PearsonR:0.1270
 molclr_gin_data:adme_hlm_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.1648
 molclr_gin_data:adme_hlm_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.2229
+PearsonR:0.1896
 molclr_gin_data:adme_hlm_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.2632
 
@@ -14,7 +14,7 @@ PearsonR:0.1512
 molclr_gin_data:adme_rlm_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.1664
 molclr_gin_data:adme_rlm_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.1462
+PearsonR:0.2024
 molclr_gin_data:adme_rlm_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.1356
 
@@ -24,14 +24,36 @@ PearsonR:0.6808
 molclr_gin_data:adme_mdr1_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.6237
 molclr_gin_data:adme_mdr1_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.4742
+PearsonR:0.4763
 molclr_gin_data:adme_mdr1_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.6054
 
 (adme_sol)
 molclr_gin_data:adme_sol_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.5634
+
 molclr_gin_data:adme_sol_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
-PearsonR:0.4908
+PearsonR:0.5494
 molclr_gin_data:adme_sol_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.2732
+
+(adme_hppb)
+molclr_gin_data:adme_hppb_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.7332
+molclr_gin_data:adme_hppb_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.6427
+molclr_gin_data:adme_hppb_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.4206
+molclr_gin_data:adme_hppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.5958
+
+(adme_rppb)
+molclr_gin_data:adme_rppb_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.7774
+molclr_gin_data:adme_rppb_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.6935
+molclr_gin_data:adme_rppb_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.5925
+molclr_gin_data:adme_rppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.4622
+

@@ -39,12 +39,20 @@ attentivefp_data:adme_sol_split:time_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4401
 
 (adme_hppb)
+attentivefp_data:adme_hppb_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5424
+attentivefp_data:adme_hppb_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4817
 attentivefp_data:adme_hppb_split:umap_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4690
 attentivefp_data:adme_hppb_split:time_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.6389
 
 (adme_rppb)
+attentivefp_data:adme_rppb_split:scaffold_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5437
+attentivefp_data:adme_rppb_split:butina_nl:2_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5254
 attentivefp_data:adme_rppb_split:umap_nl:2_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4296
 attentivefp_data:adme_rppb_split:time_nl:2_lr:0.0001_bs:128_ep:501_iter:1

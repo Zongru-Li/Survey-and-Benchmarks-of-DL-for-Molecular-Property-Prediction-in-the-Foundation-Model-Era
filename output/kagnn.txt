@@ -49,6 +49,10 @@ kagnn_data:adme_hppb_split:time_nl:4_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.6394
 
 (adme_rppb)
+kagnn_data:adme_rppb_split:scaffold_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6221
+kagnn_data:adme_rppb_split:butina_nl:4_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5421
 kagnn_data:adme_rppb_split:umap_nl:4_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.2745
 kagnn_data:adme_rppb_split:time_nl:4_lr:0.0001_bs:128_ep:501_iter:1
