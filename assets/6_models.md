@@ -16,7 +16,6 @@
 - Mol-GDL
 - Uni-mol
 - SMPT
-- GNN-SKAN
 - GraphKAN
 
 ### 在 references 中找到实现的模型

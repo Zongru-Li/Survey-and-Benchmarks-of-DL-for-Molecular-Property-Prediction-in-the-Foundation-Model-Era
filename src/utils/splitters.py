@@ -384,18 +384,18 @@ class UMAPSplitter(Splitter):
         tolerance = 0.15
         
         for cluster_id, cluster_size in clusters_with_size:
+            train_ratio = train_count / n_train_target if n_train_target > 0 else 1.0
             valid_ratio = valid_count / n_valid_target if n_valid_target > 0 else 1.0
-            test_ratio = test_count / n_test_target if n_test_target > 0 else 1.0
             
-            if test_ratio < (1.0 - tolerance):
-                test_clusters.append(cluster_id)
-                test_count += cluster_size
+            if train_ratio < (1.0 - tolerance):
+                train_clusters.append(cluster_id)
+                train_count += cluster_size
             elif valid_ratio < (1.0 - tolerance):
                 valid_clusters.append(cluster_id)
                 valid_count += cluster_size
             else:
-                train_clusters.append(cluster_id)
-                train_count += cluster_size
+                test_clusters.append(cluster_id)
+                test_count += cluster_size
         
         train_idx = []
         valid_idx = []

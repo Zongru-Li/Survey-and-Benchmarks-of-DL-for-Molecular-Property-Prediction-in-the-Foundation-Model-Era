@@ -43,12 +43,22 @@ pip install torch==2.8.0 --index-url https://download.pytorch.org/whl/cu128
 pip install torch_geometric
 pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-2.8.0+cu128.html
 pip install -r requirements.txt
+
+## For PaddleHelix framework for GEM/Mol-GDL experiments
+conda install -c conda-forge rdkit
+python -m pip install paddlepaddle-gpu -f https://paddlepaddle.org.cn/whl/stable.html
+pip install pgl paddlehelix
+
+# SMPT (using pytorch 2.7)
+pip install paddle
+pip install pahelix
+
 ```
 
 Launch experiments:
 ```bash
 # Run experiments from shell scripts
-./scripts/run_bace.sh
+./scripts/run_all.sh
 
 # Run experiments from python scripts
 python src/run.py --config configs/ka_gnn.yaml --dataset bace --split scaffold --epochs 501

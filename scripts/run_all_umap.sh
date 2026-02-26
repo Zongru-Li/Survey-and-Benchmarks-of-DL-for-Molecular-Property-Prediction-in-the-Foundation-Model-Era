@@ -7,14 +7,14 @@ cd "$(dirname "$0")/.."
 # Classification datasets: bace, bbbp, clintox, hiv, muv, sider, tox21
 # Regression datasets: adme_hlm, adme_rlm, adme_mdr1, adme_sol, adme_hppb, adme_rppb
 
-# ka_gnn
-python src/run.py --config configs/ka_gnn.yaml --dataset adme_hlm --split umap --epochs 501 &
-python src/run.py --config configs/ka_gnn.yaml --dataset adme_rlm --split umap --epochs 501 &
-python src/run.py --config configs/ka_gnn.yaml --dataset adme_mdr1 --split umap --epochs 501 &
-python src/run.py --config configs/ka_gnn.yaml --dataset adme_sol --split umap --epochs 501 &
-python src/run.py --config configs/ka_gnn.yaml --dataset adme_hppb --split umap --epochs 501 &
-python src/run.py --config configs/ka_gnn.yaml --dataset adme_rppb --split umap --epochs 501 &
-wait
+# # ka_gnn
+# python src/run.py --config configs/ka_gnn.yaml --dataset adme_hlm --split umap --epochs 501 &
+# python src/run.py --config configs/ka_gnn.yaml --dataset adme_rlm --split umap --epochs 501 &
+# python src/run.py --config configs/ka_gnn.yaml --dataset adme_mdr1 --split umap --epochs 501 &
+# python src/run.py --config configs/ka_gnn.yaml --dataset adme_sol --split umap --epochs 501 &
+# python src/run.py --config configs/ka_gnn.yaml --dataset adme_hppb --split umap --epochs 501 &
+# python src/run.py --config configs/ka_gnn.yaml --dataset adme_rppb --split umap --epochs 501 &
+# wait
 
 # ka_gat
 python src/run.py --config configs/ka_gat.yaml --dataset adme_hlm --split umap --epochs 501 &
