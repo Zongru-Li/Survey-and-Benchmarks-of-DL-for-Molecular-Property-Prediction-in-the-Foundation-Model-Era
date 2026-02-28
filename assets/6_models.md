@@ -32,6 +32,10 @@
 | **MolCLR-GCN** | MolCLR | `MolCLR/models/gcn_molclr.py` | ✅ 已添加 (PyG) |
 | **MolCLR-GIN** | MolCLR | `MolCLR/models/ginet_molclr.py` | ✅ 已添加 (PyG) |
 | **GraphKan** | GraphKan | `GraphKan/model/GNNs.py` | ✅ 已添加 (PyG) |
+| **GIN** | gin | `gin/graphcnn.py` | ✅ 已添加 (PyG) |
+| **GCN** | gcn | `gcn/gcn/models.py` | ✅ 已添加 (PyG) |
+| **GROVER** | grover | `grover/grover/model/models.py` | ✅ 已添加 (PyG) |
+| **CD-MVGNN** | cd-mvgnn | `cd-mvgnn/dglt/models/zoo/mpnn.py` | ✅ 已添加 (PyG) |
 
 ### 在 references 中找到但未直接集成的模型
 
@@ -168,6 +172,93 @@ python src/run.py --config configs/molclr_gin.yaml --dataset adme_sol --epochs 1
 python src/run.py --config configs/graphkan.yaml --dataset adme_sol --epochs 100
 ```
 
+#### 6. GIN (Graph Isomorphism Network)
+
+**论文**: How Powerful are Graph Neural Networks?
+
+**参考项目**: `references/gin`
+
+**实现文件**: `src/models/gin.py`
+
+**配置文件**: `configs/gin.yaml`
+
+**主要特点**:
+- 基于 Weisfeiler-Lehman 图同构测试
+- 使用可学习的 epsilon 参数区分中心节点和邻居节点
+- MLP 作为聚合函数
+- 支持 Jumping Knowledge (JK) 连接 (concat, last, max, sum)
+- 支持多种邻居池化类型 (sum, average, max)
+
+**使用方法**:
+```bash
+python src/run.py --config configs/gin.yaml --dataset adme_sol --epochs 100
+```
+
+#### 7. GCN (Graph Convolutional Network)
+
+**论文**: Semi-Supervised Classification with Graph Convolutional Networks
+
+**参考项目**: `references/gcn`
+
+**实现文件**: `src/models/gcn.py`
+
+**配置文件**: `configs/gcn.yaml`
+
+**主要特点**:
+- 经典的图卷积网络 (GCN) 实现
+- 使用度归一化的消息传递
+- 支持多层 GCN 卷积
+- 特征投影层和预测头
+- 支持多种池化方式
+
+**使用方法**:
+```bash
+python src/run.py --config configs/gcn.yaml --dataset adme_sol --epochs 100
+```
+
+#### 8. GROVER (Graph Representation frOm self-superVised mEssage passing tRansformer)
+
+**论文**: Self-Supervised Graph Transformer on Large-Scale Molecular Data
+
+**参考项目**: `references/grover`
+
+**实现文件**: `src/models/grover.py`
+
+**配置文件**: `configs/grover.yaml`
+
+**主要特点**:
+- 基于 Transformer 的图神经网络
+- 多头注意力机制
+- 双路消息传递 (atom/bond view)
+- 使用距离约束损失函数
+- 支持自监督预训练
+
+**使用方法**:
+```bash
+python src/run.py --config configs/grover.yaml --dataset adme_sol --epochs 100
+```
+
+#### 9. CD-MVGNN (Cross-Dependent Multi-View Graph Neural Network)
+
+**论文**: Cross-Dependent Message Passing for Molecular Property Prediction
+
+**参考项目**: `references/cd-mvgnn`
+
+**实现文件**: `src/models/cd_mvgnn.py`
+
+**配置文件**: `configs/cd_mvgnn.yaml`
+
+**主要特点**:
+- 双路消息传递网络 (DualMPN)
+- Atom view 和 Bond view 交叉依赖
+- 使用距离约束损失函数
+- 两个独立的 FFN 输出头
+
+**使用方法**:
+```bash
+python src/run.py --config configs/cd_mvgnn.yaml --dataset adme_sol --epochs 100
+```
+
 ---
 
 ### DGL 模型 (Deep Graph Library)
@@ -300,6 +391,10 @@ MODEL_REGISTRY = {
     'molclr_gcn': MolCLR_GCN,
     'molclr_gin': MolCLR_GIN,
     'graphkan': GraphKAN,
+    'gin': GIN,
+    'gcn': GCN,
+    'grover': GROVER,
+    'cd_mvgnn': CDMVGNN,
 }
 ```
 
@@ -334,11 +429,15 @@ DGL 模型使用项目的标准数据加载流程：
 | MolCLR-GCN | `configs/molclr_gcn.yaml` | num_layers=5, emb_dim=300, dropout=0.3, feat_dim=256, lr=0.0005 |
 | MolCLR-GIN | `configs/molclr_gin.yaml` | num_layers=5, emb_dim=300, dropout=0.3, feat_dim=512, lr=0.0005 |
 | GraphKan | `configs/graphkan.yaml` | num_layers=3, K=3, grid_size=5, spline_order=3, lr=0.001 |
+| GIN | `configs/gin.yaml` | num_layers=5, num_mlp_layers=2, dropout=0.5, JK=concat, lr=0.0005 |
 | D-MPNN | `configs/dmpnn.yaml` | num_layers=3, hidden=300, lr=0.0001 |
 | AttentiveFP | `configs/attentivefp.yaml` | num_layers=2, graph_feat=200, lr=0.0001 |
 | Mol-GDL | `configs/mol_gdl.yaml` | num_layers=3, lr=0.0001 |
 | N-Gram RF | `configs/ngram_rf.yaml` | num_layers=3, lr=0.001 |
 | N-Gram XGB | `configs/ngram_xgb.yaml` | num_layers=3, lr=0.001 |
+| GCN | `configs/gcn.yaml` | num_layers=5, dropout=0.3, feat_dim=256, lr=0.0005 |
+| GROVER | `configs/grover.yaml` | num_layers=3, num_heads=4, dropout=0.0, ffn_num_layers=2, lr=0.0001 |
+| CD-MVGNN | `configs/cd_mvgnn.yaml` | num_layers=3, dropout=0.0, ffn_num_layers=2, lr=0.0001 |
 
 ### 超参数调整记录
 
@@ -361,6 +460,92 @@ DGL 模型使用项目的标准数据加载流程：
 | MolCLR-GIN | dropout | 0.0 | 0.3 | 与原论文一致 |
 | D-MPNN | enc_hidden | 64 | 300 | 与原论文一致 |
 | AttentiveFP | graph_feat | 64 | 200 | 与原论文一致 |
+| GIN | num_layers | 3 (deepchem) | 5 | 增加层数提升表达力 |
+| GIN | dropout | 0 (deepchem) | 0.5 | 防止过拟合 |
+| GIN | JK | last (deepchem) | concat | 更强大的表示融合 |
+| GCN | num_layers | 2 (deepchem) | 5 | 增加层数提升表达力 |
+| GCN | dropout | 0 (deepchem) | 0.3 | 防止过拟合 |
+| GROVER | depth | 1 (deepchem) | 3 | 与 grover 官方一致 |
+| GROVER | dropout | 0.2 (deepchem) | 0.0 | 与 grover 官方一致 |
+| GROVER | ffn_num_layers | 1 (deepchem) | 2 | 与 grover 官方一致 |
+| CD-MVGNN | depth | 3 (官方) | 3 | 与官方实现一致 |
+| CD-MVGNN | dropout | 0 (官方) | 0.0 | 与官方实现一致 |
+
+---
+
+## DeepChem/ChemInfo 实现对比分析
+
+基于 `references/deepchem/` 和 `references/cheminfo/` 目录中的官方实现，对四个新添加模型进行了对比分析。
+
+### 1. GIN (Graph Isomorphism Network)
+
+| 参数 | DeepChem 默认 | 当前配置 | 说明 |
+|-----|--------------|---------|------|
+| num_layer | 3 | 5 | 增加层数提升表达力 |
+| emb_dim | 64 | 300 (hidden_feat=150) | 更大嵌入维度 |
+| dropout | 0 | 0.5 | 防止过拟合 |
+| jump_knowledge | "last" | "concat" | 更强大的表示融合 |
+| gnn_type | "gin" | "gin" | 一致 |
+
+**实现差异**:
+- DeepChem 使用 `GINEConv` (带边特征的 GIN)，当前实现使用自定义 `GINConv`
+- DeepChem 默认使用 `last` 跳跃连接，当前使用 `concat` (更强大但参数更多)
+- 参考实现 `references/gin/graphcnn.py` 支持可学习 epsilon 和多种邻居池化类型
+
+### 2. GCN (Graph Convolutional Network)
+
+| 参数 | DeepChem 默认 | 当前配置 | 说明 |
+|-----|--------------|---------|------|
+| graph_conv_layers | [64, 64] | 5层 x 300维 | 更深更宽 |
+| dropout | 0 | 0.3 | 防止过拟合 |
+| predictor_hidden_feats | 128 | 256 | 更大预测头 |
+| residual | True | 未使用 | 残差连接 |
+| batchnorm | False | True | 使用批归一化 |
+
+**实现差异**:
+- DeepChem 实现基于 DGL，当前实现基于 PyG
+- DeepChem 使用加权池化+最大池化拼接，当前使用标准 mean pooling
+- 参考实现 `references/gcn/gcn/gcn/models.py` 是 TensorFlow 版本
+
+### 3. GROVER
+
+| 参数 | DeepChem 默认 | Grover 官方 | 当前配置 | 说明 |
+|-----|--------------|------------|---------|------|
+| hidden_size | 128 | 300 | 300 | 与官方一致 |
+| depth | 1 | 3 | 3 | 与官方一致 |
+| dropout | 0.2 | 0.0 | 0.0 | 与官方一致 |
+| ffn_num_layers | 1 | 2 | 2 | 与官方一致 |
+| num_attn_heads | 4 | 4 | 4 | 一致 |
+| dist_coff | 0.1 | 0.1 | 0.1 | 一致 |
+
+**实现差异**:
+- DeepChem 的 GROVER 实现是完整版本，支持预训练和微调
+- 当前实现是简化版，专注于微调任务
+- 参考实现 `references/grover/` 包含完整的预训练流程
+
+### 4. CD-MVGNN
+
+| 参数 | 官方默认 | 当前配置 | 说明 |
+|-----|---------|---------|------|
+| depth | 3 | 3 | 一致 |
+| hidden_size | 2 (x100) | 2 (x150=300) | 略大 |
+| dropout | 0 | 0.0 | 一致 |
+| ffn_num_layers | 2 | 2 | 一致 |
+| dist_coff | 0.1 | 0.1 | 一致 |
+
+**实现差异**:
+- 官方实现 `references/cd-mvgnn/` 使用 DGL
+- 当前实现基于 PyG，核心逻辑保持一致
+- 双路消息传递 (DualMPN) 机制完全保留
+
+### 配置合理性评估
+
+| 模型 | 评估 | 建议 |
+|-----|------|------|
+| GIN | ✅ 合理 | JK=concat 提供更强表达力，dropout 0.5 防止过拟合 |
+| GCN | ✅ 合理 | 层数和维度适合分子图任务 |
+| GROVER | ✅ 合理 | 已调整为与 grover 官方一致 |
+| CD-MVGNN | ✅ 合理 | 已调整为与官方实现一致 |
 
 ---
 
@@ -399,6 +584,48 @@ DGL 模型使用项目的标准数据加载流程：
 
 注：GraphKan 使用 B-spline 可学习激活函数，需要更多 epoch 才能收敛。
 
+### GCN ADME-Sol 数据集测试结果 (epochs=2, PearsonR)
+
+| Split | PearsonR | 参数量 |
+|-------|----------|--------|
+| scaffold | 0.2817 | 601.5K |
+| butina | 0.1328 | 601.5K |
+| umap | 0.2714 | 601.5K |
+| time | -0.0710 | 601.5K |
+
+### GROVER ADME-Sol 数据集测试结果 (epochs=2, PearsonR)
+
+| Split | PearsonR | 参数量 |
+|-------|----------|--------|
+| scaffold | 0.3492 | 5.79M |
+| butina | 0.3464 | 5.79M |
+| umap | 0.3417 | 5.79M |
+| time | 0.1556 | 5.79M |
+
+注：GROVER 使用双路输出 (atom/bond view)，训练时使用距离约束损失。
+
+### CD-MVGNN ADME-Sol 数据集测试结果 (epochs=2, PearsonR)
+
+| Split | PearsonR | 参数量 |
+|-------|----------|--------|
+| scaffold | 0.1261 | 372.1K |
+| butina | 0.1825 | 372.1K |
+| umap | 0.0849 | 372.1K |
+| time | 0.0217 | 372.1K |
+
+注：CD-MVGNN 使用双路消息传递，训练时使用距离约束损失。
+
+### GIN ADME-Sol 数据集测试结果 (epochs=2, PearsonR)
+
+| Split | PearsonR | 参数量 |
+|-------|----------|--------|
+| scaffold | 0.3240 | 1.44M |
+| butina | 0.1789 | 1.44M |
+| umap | 0.2835 | 1.44M |
+| time | 0.3493 | 1.44M |
+
+注：GIN 使用 Jumping Knowledge (concat) 融合多层表示，支持可学习 epsilon 参数。
+
 ### 快速验证命令
 
 ```bash
@@ -419,6 +646,30 @@ python src/run.py --config configs/graphkan.yaml --dataset adme_sol --epochs 2 -
 python src/run.py --config configs/dmpnn.yaml --dataset adme_sol --epochs 2
 python src/run.py --config configs/attentivefp.yaml --dataset adme_sol --epochs 2
 python src/run.py --config configs/mol_gdl.yaml --dataset adme_sol --epochs 2
+
+# GCN 四种分割测试
+python src/run.py --config configs/gcn.yaml --dataset adme_sol --epochs 2 --split scaffold
+python src/run.py --config configs/gcn.yaml --dataset adme_sol --epochs 2 --split butina
+python src/run.py --config configs/gcn.yaml --dataset adme_sol --epochs 2 --split umap
+python src/run.py --config configs/gcn.yaml --dataset adme_sol --epochs 2 --split time
+
+# GROVER 四种分割测试
+python src/run.py --config configs/grover.yaml --dataset adme_sol --epochs 2 --split scaffold
+python src/run.py --config configs/grover.yaml --dataset adme_sol --epochs 2 --split butina
+python src/run.py --config configs/grover.yaml --dataset adme_sol --epochs 2 --split umap
+python src/run.py --config configs/grover.yaml --dataset adme_sol --epochs 2 --split time
+
+# CD-MVGNN 四种分割测试
+python src/run.py --config configs/cd_mvgnn.yaml --dataset adme_sol --epochs 2 --split scaffold
+python src/run.py --config configs/cd_mvgnn.yaml --dataset adme_sol --epochs 2 --split butina
+python src/run.py --config configs/cd_mvgnn.yaml --dataset adme_sol --epochs 2 --split umap
+python src/run.py --config configs/cd_mvgnn.yaml --dataset adme_sol --epochs 2 --split time
+
+# GIN 四种分割测试
+python src/run.py --config configs/gin.yaml --dataset adme_sol --epochs 2 --split scaffold
+python src/run.py --config configs/gin.yaml --dataset adme_sol --epochs 2 --split butina
+python src/run.py --config configs/gin.yaml --dataset adme_sol --epochs 2 --split umap
+python src/run.py --config configs/gin.yaml --dataset adme_sol --epochs 2 --split time
 ```
 
 ---
@@ -429,16 +680,20 @@ python src/run.py --config configs/mol_gdl.yaml --dataset adme_sol --epochs 2
 
 | 脚本 | 描述 |
 |-----|------|
-| `scripts/run_adme_sol.sh` | ADME-Sol 数据集所有模型实验 |
+| `scripts/run_adme_sol.sh` | ADME-SOL 数据集所有模型实验 |
 | `scripts/run_adme_hlm.sh` | ADME-HLM 数据集实验 |
 | `scripts/run_bace.sh` | BACE 数据集实验 |
 | `scripts/run_bbbp.sh` | BBBP 数据集实验 |
-| `scripts/graphkan/adme_sol.sh` | GraphKan ADME-Sol 四种分割实验 |
+| `scripts/graphkan/adme_sol.sh` | GraphKan ADME-SOL 四种分割实验 |
 | `scripts/graphkan/adme_hlm.sh` | GraphKan ADME-HLM 四种分割实验 |
 | `scripts/graphkan/adme_rlm.sh` | GraphKan ADME-RLM 四种分割实验 |
 | `scripts/graphkan/adme_mdr1.sh` | GraphKan ADME-MDR1 四种分割实验 |
 | `scripts/graphkan/adme_hppb.sh` | GraphKan ADME-hPPB 四种分割实验 |
 | `scripts/graphkan/adme_rppb.sh` | GraphKan ADME-rPPB 四种分割实验 |
+| `scripts/gcn/adme_*.sh` | GCN 六个 ADME 数据集四种分割实验 |
+| `scripts/grover/adme_*.sh` | GROVER 六个 ADME 数据集四种分割实验 |
+| `scripts/cd_mvgnn/adme_*.sh` | CD-MVGNN 六个 ADME 数据集四种分割实验 |
+| `scripts/gin/adme_*.sh` | GIN 六个 ADME 数据集四种分割实验 |
 
 ---
 
