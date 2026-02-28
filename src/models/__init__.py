@@ -14,6 +14,10 @@ from src.models.pretrain_gnn import PretrainGNN
 from src.models.graphmvp import GraphMVP
 from src.models.molclr import MolCLR_GCN, MolCLR_GIN
 from src.models.graphkan import GraphKAN
+from src.models.gin import GIN
+from src.models.gcn import GCN
+from src.models.grover import GROVER
+from src.models.cd_mvgnn import CDMVGNN
 
 
 __all__ = [
@@ -25,7 +29,8 @@ __all__ = [
     'DMPNN', 'AttentiveFP',
     'MolGDL', 'NgramRF', 'NgramXGB',
     'PretrainGNN', 'GraphMVP', 'MolCLR_GCN', 'MolCLR_GIN', 'GraphKAN',
-    'MODEL_REGISTRY', 'get_model', 'is_pyg_model',
+    'GIN', 'GCN', 'GROVER', 'CDMVGNN',
+    'MODEL_REGISTRY', 'get_model', 'is_pyg_model', 'is_dual_output_model',
 ]
 
 
@@ -50,12 +55,18 @@ MODEL_REGISTRY = {
     'molclr_gcn': MolCLR_GCN,
     'molclr_gin': MolCLR_GIN,
     'graphkan': GraphKAN,
+    'gin': GIN,
+    'gcn': GCN,
+    'grover': GROVER,
+    'cd_mvgnn': CDMVGNN,
 }
 
 
-PYG_MODELS = ['pretrain_gnn', 'graphmvp', 'molclr_gcn', 'molclr_gin', 'graphkan']
-PYG_MODELS_WITH_FEAT_DIM = ['molclr_gcn', 'molclr_gin']
+PYG_MODELS = ['pretrain_gnn', 'graphmvp', 'molclr_gcn', 'molclr_gin', 'graphkan', 'gin', 'gcn', 'grover', 'cd_mvgnn']
+PYG_DUAL_OUTPUT_MODELS = ['grover', 'cd_mvgnn']
+PYG_MODELS_WITH_FEAT_DIM = ['molclr_gcn', 'molclr_gin', 'gin']
 PYG_MODELS_WITH_KAN = ['graphkan']
+PYG_MODELS_WITH_GIN = ['gin']
 
 DGL_GNN_MODELS = [
     'ka_gnn', 'ka_gnn_two', 'mlp_sage', 'mlp_sage_two', 
@@ -70,6 +81,10 @@ def is_pyg_model(model_name: str) -> bool:
     return model_name in PYG_MODELS
 
 
+def is_dual_output_model(model_name: str) -> bool:
+    return model_name in PYG_DUAL_OUTPUT_MODELS
+
+
 def get_model(config):
     model_name = config['model']['name']
     if model_name not in MODEL_REGISTRY:
@@ -77,7 +92,24 @@ def get_model(config):
     
     model_class = MODEL_REGISTRY[model_name]
     
-    if model_name in PYG_MODELS_WITH_FEAT_DIM:
+    if model_name in PYG_MODELS_WITH_GIN:
+        return model_class(
+            in_feat=config['model'].get('in_feat', 113),
+            hidden_feat=config['model']['hidden_feat'],
+            out_feat=config['model'].get('out_feat', 32),
+            out=config['model']['out_dim'],
+            grid_feat=config['model'].get('grid_feat', 1),
+            num_layers=config['model']['num_layers'],
+            pooling=config['model']['pooling'],
+            use_bias=config['model'].get('use_bias', False),
+            drop_ratio=config['model'].get('dropout_ratio', 0.5),
+            feat_dim=config['model'].get('feat_dim', 256),
+            num_mlp_layers=config['model'].get('num_mlp_layers', 2),
+            learn_eps=config['model'].get('learn_eps', True),
+            neighbor_pooling_type=config['model'].get('neighbor_pooling_type', 'sum'),
+            JK=config['model'].get('JK', 'concat'),
+        )
+    elif model_name in PYG_MODELS_WITH_FEAT_DIM:
         return model_class(
             in_feat=config['model'].get('in_feat', 113),
             hidden_feat=config['model']['hidden_feat'],

@@ -71,10 +71,10 @@ def add_common_args(parser):
         help="Dataset split type (random, scaffold, umap, butina, time)",
     )
     parser.add_argument(
-        "--checkpoint",
-        type=str,
-        default=None,
-        help="Resume training from checkpoint",
+        "--save-checkpoint",
+        action="store_true",
+        default=False,
+        help="Save best model checkpoint after training (default: False for reproducibility)",
     )
     parser.add_argument(
         "--stddev",

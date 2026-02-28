@@ -159,12 +159,11 @@ def main():
         device=device,
         model_type=model_type,
         task_type=task_type,
-        checkpoint_path=args.checkpoint,
     )
 
     metric_name = 'PearsonR' if task_type == 'regression' else 'ROC-AUC'
 
-    if best_model_state is not None:
+    if args.save_checkpoint and best_model_state is not None:
         checkpoint_path = get_checkpoint_path(
             model_name=model_name,
             params={

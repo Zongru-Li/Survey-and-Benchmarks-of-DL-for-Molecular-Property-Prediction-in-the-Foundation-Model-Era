@@ -1,10 +1,9 @@
-import os
 import yaml
 import random
 import torch
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any
 
 
 def load_common_config() -> Dict[str, Any]:
@@ -81,6 +80,14 @@ def load_model_config(config_path: str) -> Dict[str, Any]:
         merged['model']['grid_size'] = model_config['grid_size']
     if 'spline_order' in model_config:
         merged['model']['spline_order'] = model_config['spline_order']
+    if 'num_mlp_layers' in model_config:
+        merged['model']['num_mlp_layers'] = model_config['num_mlp_layers']
+    if 'learn_eps' in model_config:
+        merged['model']['learn_eps'] = model_config['learn_eps']
+    if 'neighbor_pooling_type' in model_config:
+        merged['model']['neighbor_pooling_type'] = model_config['neighbor_pooling_type']
+    if 'JK' in model_config:
+        merged['model']['JK'] = model_config['JK']
     
     return merged
 

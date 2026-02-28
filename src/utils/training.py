@@ -10,7 +10,7 @@ from torch.optim.lr_scheduler import StepLR
 from logzero import logger
 
 from src.utils.data import update_node_features
-from src.models import is_pyg_model, PYG_MODELS
+from src.models import is_pyg_model, PYG_MODELS, PYG_DUAL_OUTPUT_MODELS
 
 
 def get_loss_fn(loss_type: str):
@@ -122,7 +122,7 @@ def validate_epoch_gat(model, device, valid_loader, loss_fn):
     return total_loss_val
 
 
-def train_epoch_pyg(model, device, train_loader, optimizer, loss_fn):
+def train_epoch_pyg(model, device, train_loader, optimizer, loss_fn, is_dual_output=False):
     model.train()
     total_train_loss = 0.0
     
@@ -132,15 +132,23 @@ def train_epoch_pyg(model, device, train_loader, optimizer, loss_fn):
         y = data.y.to(device)
         out = model(data)
         
-        y = y.to(dtype=out.dtype)
+        y = y.to(dtype=out.dtype if not isinstance(out, tuple) else out[0].dtype)
         if y.dim() == 1:
             y = y.unsqueeze(1)
         
-        mask = (y != -1).to(dtype=out.dtype)
+        mask = (y != -1).to(dtype=out.dtype if not isinstance(out, tuple) else out[0].dtype)
         y_clean = torch.where(y == -1, torch.zeros_like(y), y)
         
-        loss_elem = loss_fn(out, y_clean)
-        loss = (loss_elem * mask).sum() / mask.sum().clamp_min(1.0)
+        if is_dual_output and isinstance(out, tuple):
+            loss_elem1 = loss_fn(out[0], y_clean)
+            loss_elem2 = loss_fn(out[1], y_clean)
+            loss1 = (loss_elem1 * mask).sum() / mask.sum().clamp_min(1.0)
+            loss2 = (loss_elem2 * mask).sum() / mask.sum().clamp_min(1.0)
+            dist_loss = nn.MSELoss()(out[0], out[1])
+            loss = loss1 + loss2 + 0.1 * dist_loss
+        else:
+            loss_elem = loss_fn(out, y_clean)
+            loss = (loss_elem * mask).sum() / mask.sum().clamp_min(1.0)
         
         loss.backward()
         optimizer.step()
@@ -149,7 +157,7 @@ def train_epoch_pyg(model, device, train_loader, optimizer, loss_fn):
     return total_train_loss
 
 
-def validate_epoch_pyg(model, device, valid_loader, loss_fn):
+def validate_epoch_pyg(model, device, valid_loader, loss_fn, is_dual_output=False):
     model.eval()
     total_loss_val = 0.0
     
@@ -159,21 +167,24 @@ def validate_epoch_pyg(model, device, valid_loader, loss_fn):
             y = data.y.to(device)
             out = model(data)
             
-            y = y.to(dtype=out.dtype)
+            y = y.to(dtype=out.dtype if not isinstance(out, tuple) else out[0].dtype)
             if y.dim() == 1:
                 y = y.unsqueeze(1)
             
-            mask = (y != -1).to(dtype=out.dtype)
+            mask = (y != -1).to(dtype=out.dtype if not isinstance(out, tuple) else out[0].dtype)
             y_clean = torch.where(y == -1, torch.zeros_like(y), y)
             
-            loss_elem = loss_fn(out, y_clean)
+            if is_dual_output and isinstance(out, tuple):
+                loss_elem = loss_fn(out[0], y_clean)
+            else:
+                loss_elem = loss_fn(out, y_clean)
             vloss = (loss_elem * mask).sum() / mask.sum().clamp_min(1.0)
             total_loss_val += vloss.item()
     
     return total_loss_val
 
 
-def predict_pyg(model, device, data_loader):
+def predict_pyg(model, device, data_loader, is_dual_output=False):
     model.eval()
     total_preds = torch.Tensor().cpu()
     total_labels = torch.Tensor().cpu()
@@ -183,6 +194,9 @@ def predict_pyg(model, device, data_loader):
             data = data.to(device)
             y = data.y.cpu()
             output = model(data).cpu()
+            
+            if is_dual_output and isinstance(output, tuple):
+                output = output[0]
             
             if y.dim() == 1:
                 y = y.unsqueeze(1)
@@ -204,7 +218,7 @@ def predict_pyg(model, device, data_loader):
     return AUC
 
 
-def predict_pyg_regression(model, device, data_loader):
+def predict_pyg_regression(model, device, data_loader, is_dual_output=False):
     model.eval()
     total_preds = torch.Tensor().cpu()
     total_labels = torch.Tensor().cpu()
@@ -214,6 +228,9 @@ def predict_pyg_regression(model, device, data_loader):
             data = data.to(device)
             y = data.y.cpu()
             output = model(data).cpu()
+            
+            if is_dual_output and isinstance(output, tuple):
+                output = output[0]
             
             if y.dim() == 1:
                 y = y.unsqueeze(1)
@@ -362,7 +379,6 @@ def train_model(
     device: torch.device,
     model_type: str = 'gnn',
     task_type: str = 'classification',
-    checkpoint_path: Optional[str] = None
 ) -> Tuple[Optional[dict], float, float]:
     model_name = config['model']['name']
     epochs = config['training']['epochs']
@@ -382,6 +398,7 @@ def train_model(
         'kan_sage', 'kan_sage_two', 'dmpnn', 'attentivefp',
         'mol_gdl', 'ngram_rf', 'ngram_xgb'
     ]
+    is_dual_output = model_name in PYG_DUAL_OUTPUT_MODELS
     is_regression = task_type == 'regression'
     
     if is_regression:
@@ -403,14 +420,14 @@ def train_model(
         
         for epoch in range(epochs):
             if is_pyg:
-                train_loss = train_epoch_pyg(model, device, train_loader, optimizer, loss_fn)
+                train_loss = train_epoch_pyg(model, device, train_loader, optimizer, loss_fn, is_dual_output)
                 if val_loader:
-                    val_loss = validate_epoch_pyg(model, device, val_loader, loss_fn)
+                    val_loss = validate_epoch_pyg(model, device, val_loader, loss_fn, is_dual_output)
                     print(f"Epoch {epoch+1} | Train Loss: {train_loss:.4f} | Val Loss: {val_loss:.4f}", flush=True)
                 if is_regression:
-                    score = predict_pyg_regression(model, device, test_loader)
+                    score = predict_pyg_regression(model, device, test_loader, is_dual_output)
                 else:
-                    score = predict_pyg(model, device, test_loader)
+                    score = predict_pyg(model, device, test_loader, is_dual_output)
             elif is_gnn_model:
                 train_loss = train_epoch_gnn(model, device, train_loader, optimizer, loss_fn)
                 if val_loader:
