@@ -1,0 +1,13 @@
+cd_mvgnn_data:adme_hlm_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5299
+cd_mvgnn_data:adme_rlm_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5919
+cd_mvgnn_data:adme_mdr1_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5648
+cd_mvgnn_data:adme_sol_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5061
+cd_mvgnn_data:adme_hppb_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.7130
+cd_mvgnn_data:adme_rppb_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.1247
+

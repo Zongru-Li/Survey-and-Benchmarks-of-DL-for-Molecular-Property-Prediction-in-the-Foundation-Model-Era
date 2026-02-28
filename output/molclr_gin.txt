@@ -31,7 +31,8 @@ PearsonR:0.6054
 (adme_sol)
 molclr_gin_data:adme_sol_split:scaffold_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.5634
-
+molclr_gin_data:adme_sol_split:butina_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.3516
 molclr_gin_data:adme_sol_split:umap_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.5494
 molclr_gin_data:adme_sol_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1

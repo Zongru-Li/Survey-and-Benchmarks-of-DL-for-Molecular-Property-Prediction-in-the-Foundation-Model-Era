@@ -4,7 +4,7 @@ PearsonR:0.4681
 mol_gdl_data:adme_hlm_split:butina_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4421
 mol_gdl_data:adme_hlm_split:umap_nl:3_lr:0.0001_bs:128_ep:501_iter:1
-PearsonR:0.3339
+PearsonR:0.3508
 mol_gdl_data:adme_hlm_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.3732
 
@@ -14,7 +14,7 @@ PearsonR:0.4454
 mol_gdl_data:adme_rlm_split:butina_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.3584
 mol_gdl_data:adme_rlm_split:umap_nl:3_lr:0.0001_bs:128_ep:501_iter:1
-PearsonR:0.2419
+PearsonR:0.2382
 mol_gdl_data:adme_rlm_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.3257
 
@@ -24,7 +24,7 @@ PearsonR:0.6753
 mol_gdl_data:adme_mdr1_split:butina_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.6529
 mol_gdl_data:adme_mdr1_split:umap_nl:3_lr:0.0001_bs:128_ep:501_iter:1
-PearsonR:0.4682
+PearsonR:0.4423
 mol_gdl_data:adme_mdr1_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.6738
 
@@ -34,15 +34,27 @@ PearsonR:0.4439
 mol_gdl_data:adme_sol_split:butina_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.3738
 mol_gdl_data:adme_sol_split:umap_nl:3_lr:0.0001_bs:128_ep:501_iter:1
-PearsonR:0.4545
+PearsonR:0.4160
 mol_gdl_data:adme_sol_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.4192
 
 (adme_hppb)
+mol_gdl_data:adme_hppb_split:scaffold_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6428
+mol_gdl_data:adme_hppb_split:butina_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6268
+mol_gdl_data:adme_hppb_split:umap_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.4215
 mol_gdl_data:adme_hppb_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
-PearsonR:0.7119
+PearsonR:0.6771
 
 (adme_rppb)
+mol_gdl_data:adme_rppb_split:scaffold_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6058
+mol_gdl_data:adme_rppb_split:butina_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5345
+mol_gdl_data:adme_rppb_split:umap_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.3659
 mol_gdl_data:adme_rppb_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
 PearsonR:0.6581
 
