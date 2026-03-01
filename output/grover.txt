@@ -1,0 +1,13 @@
+grover_data:adme_hlm_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5642
+grover_data:adme_rlm_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6105
+grover_data:adme_mdr1_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.6077
+grover_data:adme_sol_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.5635
+grover_data:adme_hppb_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.8782
+grover_data:adme_rppb_split:time_nl:3_lr:0.0001_bs:128_ep:501_iter:1
+PearsonR:0.0932
+

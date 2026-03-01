@@ -58,3 +58,21 @@ PearsonR:0.5032
 graphkan_data:adme_rppb_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.3155
 
+graphkan_data:adme_hppb_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.8794
+
+graphkan_data:adme_rppb_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3369
+
+graphkan_data:adme_sol_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3009
+
+graphkan_data:adme_mdr1_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.6262
+
+graphkan_data:adme_hlm_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.1014
+
+graphkan_data:adme_rlm_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.1220
+

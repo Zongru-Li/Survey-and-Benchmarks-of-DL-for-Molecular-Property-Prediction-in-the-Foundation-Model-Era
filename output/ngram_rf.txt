@@ -58,3 +58,15 @@ PearsonR:0.2710
 ngram_rf_data:adme_rppb_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
 PearsonR:0.2404
 
+ngram_rf_data:adme_hlm_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3080
+ngram_rf_data:adme_rlm_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.1429
+ngram_rf_data:adme_mdr1_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3069
+ngram_rf_data:adme_sol_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3739
+ngram_rf_data:adme_hppb_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.3621
+ngram_rf_data:adme_rppb_split:time_nl:3_lr:0.001_bs:128_ep:501_iter:1
+PearsonR:0.2404

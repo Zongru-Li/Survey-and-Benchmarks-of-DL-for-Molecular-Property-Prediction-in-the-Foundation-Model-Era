@@ -58,3 +58,16 @@ PearsonR:0.5925
 molclr_gin_data:adme_rppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
 PearsonR:0.4622
 
+molclr_gin_data:adme_rppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.4187
+molclr_gin_data:adme_hppb_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.7726
+molclr_gin_data:adme_sol_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.3556
+molclr_gin_data:adme_mdr1_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.6192
+molclr_gin_data:adme_rlm_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.0938
+molclr_gin_data:adme_hlm_split:time_nl:5_lr:0.0005_bs:128_ep:501_iter:1
+PearsonR:0.1452
+
