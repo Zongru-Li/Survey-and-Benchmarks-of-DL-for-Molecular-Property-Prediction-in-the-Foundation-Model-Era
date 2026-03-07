@@ -1,0 +1,24 @@
+model_select: "gin"
+force_field: 'uff'
+
+encoder_atom: "cgcnn"
+encoder_bond: "dim_14"
+
+pooling: 'mean'
+loss_sclect: 'bce'
+grid_feat: 1
+num_layers: 5
+dropout_ratio: 0.5
+feat_dim: 256
+num_mlp_layers: 2
+learn_eps: true
+neighbor_pooling_type: "sum"
+JK: "concat"
+
+LR: 0.0005
+NUM_EPOCHS: 501
+batch_size: 128
+train_ratio: 0.8
+vali_ratio: 0.1
+test_ratio: 0.1
+iter: 1

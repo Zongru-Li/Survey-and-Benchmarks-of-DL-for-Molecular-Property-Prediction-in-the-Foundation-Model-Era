@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/../.."
+
+# adme_mdr1 dataset experiments with ka_gnn_two
+# Dataset: adme_mdr1 (ADME, regression)
+# Splits: scaffold, butina, umap, time
+# Epochs: 501
+
+python src/run.py --config configs/ka_gnn_two.yaml --dataset adme_mdr1 --split scaffold --epochs 501 &
+python src/run.py --config configs/ka_gnn_two.yaml --dataset adme_mdr1 --split butina --epochs 501 &
+python src/run.py --config configs/ka_gnn_two.yaml --dataset adme_mdr1 --split umap --epochs 501 &
+python src/run.py --config configs/ka_gnn_two.yaml --dataset adme_mdr1 --split time --epochs 501 &
+wait

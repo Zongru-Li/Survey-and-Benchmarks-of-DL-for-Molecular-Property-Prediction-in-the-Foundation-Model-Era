@@ -1,0 +1,187 @@
+from src.models.base import BaseModel as BaseModel
+from src.models.ka_gnn import KA_GNN
+from src.models.ka_gat import KA_GAT
+from src.models.dmpnn import DMPNN
+from src.models.attentivefp import AttentiveFP
+from src.models.mol_gdl import MolGDL
+from src.models.ngram import NgramRF, NgramXGB
+from src.models.pretrain_gnn import PretrainGNN
+from src.models.graphmvp import GraphMVP
+from src.models.molclr import MolCLR_GCN, MolCLR_GIN
+from src.models.graphkan import GraphKAN
+from src.models.gin import GIN
+from src.models.gcn import GCN
+from src.models.grover import GROVER
+from src.models.cd_mvgnn import CDMVGNN
+
+
+__all__ = [
+    "BaseModel",
+    "KA_GNN",
+    "KA_GAT",
+    "DMPNN",
+    "AttentiveFP",
+    "MolGDL",
+    "NgramRF",
+    "NgramXGB",
+    "PretrainGNN",
+    "GraphMVP",
+    "MolCLR_GCN",
+    "MolCLR_GIN",
+    "GraphKAN",
+    "GIN",
+    "GCN",
+    "GROVER",
+    "CDMVGNN",
+    "MODEL_REGISTRY",
+    "get_model",
+    "is_pyg_model",
+    "is_dual_output_model",
+]
+
+
+MODEL_REGISTRY = {
+    "ka_gnn": KA_GNN,
+    "kagat": KA_GAT,
+    "dmpnn": DMPNN,
+    "attentivefp": AttentiveFP,
+    "mol_gdl": MolGDL,
+    "ngram_rf": NgramRF,
+    "ngram_xgb": NgramXGB,
+    "pretrain_gnn": PretrainGNN,
+    "graphmvp": GraphMVP,
+    "molclr_gcn": MolCLR_GCN,
+    "molclr_gin": MolCLR_GIN,
+    "graphkan": GraphKAN,
+    "gin": GIN,
+    "gcn": GCN,
+    "grover": GROVER,
+    "cd_mvgnn": CDMVGNN,
+}
+
+
+PYG_MODELS = [
+    "pretrain_gnn",
+    "graphmvp",
+    "molclr_gcn",
+    "molclr_gin",
+    "graphkan",
+    "gin",
+    "gcn",
+    "grover",
+    "cd_mvgnn",
+]
+PYG_DUAL_OUTPUT_MODELS = ["grover", "cd_mvgnn"]
+PYG_MODELS_WITH_FEAT_DIM = ["molclr_gcn", "molclr_gin", "gin"]
+PYG_MODELS_WITH_KAN = ["graphkan"]
+PYG_MODELS_WITH_GIN = ["gin"]
+
+DGL_GNN_MODELS = [
+    "ka_gnn",
+    "dmpnn",
+    "attentivefp",
+    "mol_gdl",
+    "ngram_rf",
+    "ngram_xgb",
+]
+
+DGL_GAT_MODELS = ["kagat"]
+
+
+def is_pyg_model(model_name: str) -> bool:
+    return model_name in PYG_MODELS
+
+
+def is_dual_output_model(model_name: str) -> bool:
+    return model_name in PYG_DUAL_OUTPUT_MODELS
+
+
+def get_model(config):
+    model_name = config["model"]["name"]
+    if model_name not in MODEL_REGISTRY:
+        raise ValueError(
+            f"Unknown model: {model_name}. Available: {list(MODEL_REGISTRY.keys())}"
+        )
+
+    model_class = MODEL_REGISTRY[model_name]
+
+    if model_name in PYG_MODELS_WITH_GIN:
+        return model_class(
+            in_feat=config["model"].get("in_feat", 113),
+            hidden_feat=config["model"]["hidden_feat"],
+            out_feat=config["model"].get("out_feat", 32),
+            out=config["model"]["out_dim"],
+            grid_feat=config["model"].get("grid_feat", 1),
+            num_layers=config["model"]["num_layers"],
+            pooling=config["model"]["pooling"],
+            use_bias=config["model"].get("use_bias", False),
+            drop_ratio=config["model"].get("dropout_ratio", 0.5),
+            feat_dim=config["model"].get("feat_dim", 256),
+            num_mlp_layers=config["model"].get("num_mlp_layers", 2),
+            learn_eps=config["model"].get("learn_eps", True),
+            neighbor_pooling_type=config["model"].get("neighbor_pooling_type", "sum"),
+            JK=config["model"].get("JK", "concat"),
+        )
+    elif model_name in PYG_MODELS_WITH_FEAT_DIM:
+        return model_class(
+            in_feat=config["model"].get("in_feat", 113),
+            hidden_feat=config["model"]["hidden_feat"],
+            out_feat=config["model"].get("out_feat", 32),
+            out=config["model"]["out_dim"],
+            grid_feat=config["model"].get("grid_feat", 1),
+            num_layers=config["model"]["num_layers"],
+            pooling=config["model"]["pooling"],
+            use_bias=config["model"].get("use_bias", False),
+            drop_ratio=config["model"].get("dropout_ratio", 0.3),
+            feat_dim=config["model"].get("feat_dim", 256),
+        )
+    elif model_name in PYG_MODELS_WITH_KAN:
+        return model_class(
+            in_feat=config["model"].get("in_feat", 113),
+            hidden_feat=config["model"]["hidden_feat"],
+            out_feat=config["model"].get("out_feat", 32),
+            out=config["model"]["out_dim"],
+            grid_feat=config["model"].get("grid_feat", 1),
+            num_layers=config["model"]["num_layers"],
+            pooling=config["model"]["pooling"],
+            use_bias=config["model"].get("use_bias", False),
+            drop_ratio=config["model"].get("dropout_ratio", 0.3),
+            K=config["model"].get("K", 3),
+            grid_size=config["model"].get("grid_size", 5),
+            spline_order=config["model"].get("spline_order", 3),
+        )
+    elif model_name in PYG_MODELS:
+        return model_class(
+            in_feat=config["model"].get("in_feat", 113),
+            hidden_feat=config["model"]["hidden_feat"],
+            out_feat=config["model"].get("out_feat", 32),
+            out=config["model"]["out_dim"],
+            grid_feat=config["model"].get("grid_feat", 1),
+            num_layers=config["model"]["num_layers"],
+            pooling=config["model"]["pooling"],
+            use_bias=config["model"].get("use_bias", False),
+            drop_ratio=config["model"].get("dropout_ratio", 0.5),
+        )
+    elif model_name in DGL_GNN_MODELS:
+        return model_class(
+            in_feat=config["model"]["in_feat"],
+            hidden_feat=config["model"]["hidden_feat"],
+            out_feat=config["model"]["out_feat"],
+            out=config["model"]["out_dim"],
+            grid_feat=config["model"].get("grid_feat", 1),
+            num_layers=config["model"]["num_layers"],
+            pooling=config["model"]["pooling"],
+            use_bias=config["model"].get("use_bias", False),
+        )
+    else:
+        return model_class(
+            in_node_dim=config["model"]["in_node_dim"],
+            in_edge_dim=config["model"]["in_edge_dim"],
+            hidden_dim=config["model"]["hidden_feat"],
+            out_1=config["model"]["out_feat"],
+            out_2=config["model"]["out_dim"],
+            gride_size=config["model"].get("grid_feat", 3),
+            head=config["model"].get("num_heads", 2),
+            layer_num=config["model"]["num_layers"],
+            pooling=config["model"]["pooling"],
+        )
